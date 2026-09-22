@@ -1,0 +1,14 @@
+﻿[Unit]
+Description=Kanban OS Tecnicos VIP
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/kanban-vip
+EnvironmentFile=-/opt/kanban-vip/.env
+ExecStart=/opt/kanban-vip/.venv/bin/python -m uvicorn app.main:app --host 127.0.0.1 --port 8765
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

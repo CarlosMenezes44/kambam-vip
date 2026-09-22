@@ -1,0 +1,3073 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Kanban da Alta Performance Tecnica VIP TELECOM</title>
+  <style>
+    :root {
+      --bg: #f3f7f8;
+      --panel: #ffffff;
+      --panel-2: #e8f0f2;
+      --panel-3: #f8fbfb;
+      --text: #142326;
+      --muted: #607378;
+      --line: #d7e3e6;
+      --vip-dark: #205860;
+      --vip-dark-2: #164850;
+      --vip-green: #18f008;
+      --vip-green-soft: #dffedd;
+      --petroleum: #205860;
+      --petroleum-2: #164850;
+      --petroleum-3: #2b737c;
+      --tech-green-border: #8eff82;
+      --green: #178a53;
+      --blue: #2563eb;
+      --yellow: #b7791f;
+      --red: #c53030;
+      --ink: #102f35;
+      --shadow: 0 10px 26px rgba(22, 72, 80, .10);
+      --glass: rgba(255, 255, 255, .72);
+      --glass-strong: rgba(255, 255, 255, .86);
+      --glass-border: rgba(255, 255, 255, .62);
+      --glass-shadow: 0 10px 26px rgba(22, 72, 80, .12), inset 0 1px 0 rgba(255,255,255,.76);
+      --column-width: 384px;
+      --card-gap: 12px;
+      --card-padding: 13px;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background:
+        linear-gradient(180deg, #eef6f7 0, #f8fbfb 190px, var(--bg) 100%);
+      color: var(--text);
+      font-family: Inter, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      font-feature-settings: "tnum" 1, "cv02" 1, "cv03" 1;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+      letter-spacing: 0;
+    }
+    body.density-compact {
+      --column-width: 326px;
+      --card-gap: 8px;
+      --card-padding: 10px;
+    }
+    button, input, select, textarea { font: inherit; }
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: linear-gradient(180deg, rgba(248,251,251,.86), rgba(248,251,251,.74));
+      border-bottom: 1px solid rgba(215,227,230,.72);
+      padding: 12px 18px 14px;
+      box-shadow: 0 12px 34px rgba(22, 72, 80, .10);
+      backdrop-filter: blur(18px) saturate(140%);
+      -webkit-backdrop-filter: blur(18px) saturate(140%);
+    }
+    .topline {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: center;
+    }
+    .brand-area {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 280px;
+    }
+    .brand-mark {
+      width: 116px;
+      height: 48px;
+      object-fit: contain;
+      flex: 0 0 auto;
+    }
+    .title-stack {
+      min-width: 0;
+    }
+    h1 {
+      margin: 0;
+      font-size: 20px;
+      line-height: 1.18;
+      color: var(--vip-dark);
+      font-weight: 850;
+    }
+    .subtitle {
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.3;
+      font-weight: 600;
+    }
+    .controls, .filterbar, .action-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .controls {
+      justify-content: flex-end;
+      align-items: center;
+      max-width: 820px;
+    }
+    .action-group {
+      padding: 4px;
+      border: 1px solid var(--glass-border);
+      background: var(--glass);
+      border-radius: 8px;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.72);
+      backdrop-filter: blur(14px) saturate(145%);
+      -webkit-backdrop-filter: blur(14px) saturate(145%);
+    }
+    .filterbar {
+      margin-top: 12px;
+      align-items: center;
+    }
+    body.planning-mode .filterbar:not(.planning-visible),
+    body.planning-mode .summary,
+    body.planning-mode .statusline {
+      display: none;
+    }
+    body.planning-mode .topbar {
+      padding-bottom: 10px;
+    }
+    body.planning-mode .board-wrap {
+      padding-top: 10px;
+    }
+    body.planning-mode .board {
+      min-height: calc(100vh - 132px);
+    }
+    body.planning-mode .tech-column {
+      height: calc(100vh - 150px);
+      max-height: calc(100vh - 150px);
+    }
+    .field {
+      height: 38px;
+      border: 1px solid rgba(190, 210, 214, .95);
+      background: rgba(255,255,255,.92);
+      border-radius: 8px;
+      padding: 0 10px;
+      color: var(--text);
+      font-weight: 600;
+    }
+    .field:focus, .icon-button:focus-visible, .segment:focus-visible {
+      outline: 2px solid rgba(24, 240, 8, .36);
+      outline-offset: 2px;
+    }
+    .search-field {
+      min-width: 320px;
+      flex: 1 1 280px;
+    }
+    .icon-button {
+      height: 38px;
+      min-width: 38px;
+      border: 1px solid rgba(255,255,255,.68);
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.88), rgba(238,247,248,.66));
+      border-radius: 8px;
+      color: var(--vip-dark);
+      cursor: pointer;
+      padding: 0 12px;
+      font-size: 13px;
+      font-weight: 800;
+      white-space: nowrap;
+      box-shadow: var(--glass-shadow);
+      backdrop-filter: blur(14px) saturate(150%);
+      -webkit-backdrop-filter: blur(14px) saturate(150%);
+      transition: transform .16s ease, box-shadow .16s ease, border-color .16s ease, background .16s ease;
+    }
+    .icon-button:hover {
+      border-color: rgba(32, 88, 96, .35);
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.96), rgba(234,247,248,.78));
+      box-shadow: 0 14px 30px rgba(22, 72, 80, .16), inset 0 1px 0 rgba(255,255,255,.88);
+      transform: translateY(-1px);
+    }
+    .icon-button:active {
+      transform: translateY(0);
+      box-shadow: inset 0 2px 8px rgba(22,72,80,.12);
+    }
+    .icon-button:disabled {
+      cursor: progress;
+      opacity: .72;
+      transform: none;
+    }
+    .primary-button {
+      background:
+        linear-gradient(180deg, rgba(32,88,96,.92), rgba(22,72,80,.88));
+      border-color: rgba(255,255,255,.26);
+      color: #fff;
+      font-weight: 850;
+    }
+    .primary-button:hover {
+      background:
+        linear-gradient(180deg, rgba(38,104,112,.94), rgba(22,72,80,.92));
+      border-color: rgba(255,255,255,.38);
+    }
+    .accent-button {
+      background:
+        linear-gradient(180deg, rgba(110,255,92,.82), rgba(24,240,8,.70));
+      border-color: rgba(255,255,255,.52);
+      color: #0d343a;
+      box-shadow: 0 0 0 1px rgba(32, 88, 96, .08);
+    }
+    .accent-button:hover {
+      background: #14d907;
+      border-color: #14d907;
+    }
+    .segmented {
+      display: inline-flex;
+      gap: 4px;
+      padding: 3px;
+      border: 1px solid var(--glass-border);
+      background: rgba(255,255,255,.48);
+      border-radius: 8px;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.68), 0 8px 18px rgba(22,72,80,.08);
+      backdrop-filter: blur(16px) saturate(150%);
+      -webkit-backdrop-filter: blur(16px) saturate(150%);
+    }
+    .segment {
+      height: 30px;
+      border: 1px solid transparent;
+      border-radius: 6px;
+      background: transparent;
+      color: #3f5960;
+      padding: 0 10px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 850;
+      white-space: nowrap;
+      transition: background .16s ease, border-color .16s ease, box-shadow .16s ease, color .16s ease;
+    }
+    .segment:hover {
+      background: rgba(255,255,255,.72);
+      border-color: rgba(255,255,255,.74);
+      color: var(--vip-dark);
+    }
+    .segment.active {
+      background:
+        linear-gradient(180deg, rgba(32,88,96,.90), rgba(22,72,80,.84));
+      color: #fff;
+      border-color: rgba(255,255,255,.32);
+      box-shadow: 0 8px 18px rgba(22,72,80,.20), inset 0 1px 0 rgba(255,255,255,.28);
+    }
+    .segment[data-state="late"].active {
+      background: linear-gradient(180deg, rgba(220,38,38,.92), rgba(197,48,48,.84));
+    }
+    .segment[data-state="running"].active {
+      background: linear-gradient(180deg, rgba(59,130,246,.92), rgba(37,99,235,.84));
+    }
+    .segment[data-state="waiting"].active {
+      background: linear-gradient(180deg, rgba(202,138,4,.92), rgba(183,121,31,.84));
+    }
+    .segment[data-state="done"].active {
+      background: linear-gradient(180deg, rgba(31,160,95,.92), rgba(23,138,83,.84));
+    }
+    .density-switch {
+      margin-left: auto;
+    }
+    .toggle {
+      display: inline-flex;
+      height: 38px;
+      align-items: center;
+      gap: 7px;
+      border: 1px solid var(--line);
+      background: var(--panel);
+      border-radius: 8px;
+      padding: 0 10px;
+      color: var(--text);
+      font-size: 13px;
+      font-weight: 650;
+      white-space: nowrap;
+    }
+    .summary {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(112px, 1fr));
+      gap: 8px;
+      margin-top: 14px;
+    }
+    .metric {
+      border: 1px solid var(--line);
+      background: var(--panel);
+      border-radius: 8px;
+      padding: 9px 10px;
+      font-size: 13px;
+      color: var(--muted);
+      box-shadow: 0 1px 0 rgba(32,88,96,.04);
+      font-weight: 650;
+    }
+    .metric b {
+      color: var(--vip-dark);
+      font-size: 16px;
+      margin-right: 4px;
+      font-weight: 850;
+    }
+    .statusline {
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 650;
+    }
+    .board-wrap {
+      overflow-x: auto;
+      padding: 14px 18px 16px;
+    }
+    .board {
+      display: grid;
+      grid-auto-flow: column;
+      grid-auto-columns: minmax(var(--column-width), var(--column-width));
+      gap: 14px;
+      align-items: start;
+      min-height: calc(100vh - 198px);
+    }
+    .tech-column {
+      background:
+        linear-gradient(180deg, rgba(32,88,96,.98) 0%, rgba(22,72,80,.98) 100%);
+      border: 1px solid rgba(142,255,130,.76);
+      border-radius: 8px;
+      min-height: 360px;
+      height: calc(100vh - 210px);
+      max-height: calc(100vh - 210px);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      box-shadow: 0 18px 34px rgba(13,51,58,.22), 0 0 0 1px rgba(142,255,130,.18), inset 0 1px 0 rgba(255,255,255,.12);
+    }
+    .tech-head {
+      min-height: 82px;
+      padding: 13px 12px 12px;
+      background:
+        linear-gradient(180deg, rgba(43,115,124,.94) 0%, rgba(32,88,96,.98) 100%);
+      border-bottom: 1px solid rgba(142,255,130,.48);
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .tech-info {
+      min-width: 0;
+      flex: 1 1 auto;
+    }
+    .tech-name {
+      display: block;
+      font-weight: 900;
+      color: #f4fffb;
+      font-size: 17px;
+      line-height: 1.15;
+      overflow-wrap: anywhere;
+      text-shadow: 0 1px 1px rgba(0,0,0,.22);
+    }
+    .tech-title-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .last-os-pill {
+      display: inline-flex;
+      align-items: center;
+      min-height: 23px;
+      border: 1px solid rgba(142,255,130,.42);
+      background: rgba(255,255,255,.13);
+      color: #d9ffd5;
+      border-radius: 999px;
+      padding: 3px 8px;
+      font-size: 11px;
+      font-weight: 850;
+      line-height: 1.15;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.14);
+    }
+    .tech-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 8px;
+    }
+    .tech-mini-button {
+      min-height: 28px;
+      border: 1px solid rgba(142,255,130,.38);
+      background: rgba(255,255,255,.12);
+      color: #f4fffb;
+      border-radius: 8px;
+      padding: 5px 9px;
+      cursor: pointer;
+      font-size: 11px;
+      font-weight: 850;
+      line-height: 1.1;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.14);
+    }
+    .tech-mini-button:hover {
+      background: rgba(142,255,130,.18);
+      border-color: rgba(142,255,130,.70);
+    }
+    .tech-head small {
+      display: block;
+      margin-top: 4px;
+      color: rgba(222,247,249,.82);
+      font-size: 11.5px;
+      line-height: 1.25;
+      max-width: 100%;
+      overflow-wrap: anywhere;
+      font-weight: 650;
+    }
+    .tech-total {
+      background:
+        linear-gradient(180deg, rgba(142,255,130,.96), rgba(24,240,8,.82));
+      color: #082f34;
+      min-width: 38px;
+      height: 32px;
+      border-radius: 8px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      font-weight: 850;
+      border: 1px solid rgba(255,255,255,.52);
+      box-shadow: 0 10px 20px rgba(4,18,21,.18), inset 0 1px 0 rgba(255,255,255,.40);
+    }
+    .column-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+      padding: 9px 10px 10px;
+      border-bottom: 1px solid rgba(142,255,130,.34);
+      color: rgba(229,247,248,.88);
+      font-size: 11.5px;
+      font-weight: 800;
+    }
+    .column-stats span {
+      background: rgba(255,255,255,.12);
+      border-radius: 8px;
+      padding: 7px 6px;
+      text-align: center;
+      border: 1px solid rgba(142,255,130,.30);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.14);
+      backdrop-filter: blur(12px) saturate(135%);
+      -webkit-backdrop-filter: blur(12px) saturate(135%);
+    }
+    .cards {
+      padding: 11px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: var(--card-gap);
+      border: 1px dashed transparent;
+      background: linear-gradient(180deg, rgba(7,31,35,.08), rgba(7,31,35,.18));
+    }
+    .cards.drop-target {
+      border-color: var(--tech-green-border);
+      background: rgba(142, 255, 130, .12);
+    }
+    .cards::-webkit-scrollbar { width: 9px; }
+    .cards::-webkit-scrollbar-thumb {
+      background: rgba(142,255,130,.56);
+      border-radius: 999px;
+      border: 2px solid var(--petroleum-2);
+    }
+    .os-card {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-left: 5px solid var(--yellow);
+      border-radius: 8px;
+      padding: var(--card-padding);
+      box-shadow: 0 3px 12px rgba(20,35,38,.06);
+      cursor: pointer;
+    }
+    .os-card[draggable="true"] { cursor: grab; }
+    .os-card.dragging {
+      opacity: .58;
+      outline: 2px solid #93c5fd;
+    }
+    .os-card:hover {
+      border-color: rgba(32, 88, 96, .32);
+      box-shadow: 0 8px 18px rgba(20,35,38,.10);
+    }
+    .os-card.done { border-left-color: var(--green); }
+    .os-card.running { border-left-color: var(--blue); }
+    .os-card.waiting { border-left-color: var(--yellow); }
+    .os-card.agenda-late {
+      border-left-color: var(--red);
+      background: #fffafa;
+      border-color: #f4c7c7;
+    }
+    .card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 10px;
+    }
+    .card-top strong {
+      font-size: 16px;
+      color: var(--vip-dark);
+      line-height: 1.2;
+    }
+    .pill {
+      border-radius: 999px;
+      padding: 5px 8px;
+      font-size: 11px;
+      font-weight: 850;
+      color: #fff;
+      background: var(--yellow);
+      white-space: nowrap;
+      line-height: 1.1;
+      border: 1px solid rgba(255,255,255,.42);
+      box-shadow: 0 8px 18px rgba(22,72,80,.12), inset 0 1px 0 rgba(255,255,255,.24);
+      backdrop-filter: blur(10px) saturate(145%);
+      -webkit-backdrop-filter: blur(10px) saturate(145%);
+    }
+    .pill.done { background: linear-gradient(180deg, rgba(31,160,95,.90), rgba(23,138,83,.82)); }
+    .pill.running { background: linear-gradient(180deg, rgba(59,130,246,.90), rgba(37,99,235,.82)); }
+    .pill.waiting { background: linear-gradient(180deg, rgba(202,138,4,.90), rgba(183,121,31,.82)); }
+    .pill.late { background: linear-gradient(180deg, rgba(220,38,38,.92), rgba(197,48,48,.84)); }
+    .subject {
+      margin-top: 10px;
+      font-size: 14px;
+      font-weight: 800;
+      line-height: 1.32;
+      color: #1a3034;
+      overflow-wrap: anywhere;
+    }
+    .meta {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 6px;
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.35;
+      font-weight: 600;
+    }
+    .meta span {
+      overflow-wrap: anywhere;
+    }
+    .meta span:first-child {
+      color: #324b50;
+      font-weight: 800;
+    }
+    .agenda {
+      margin-top: 10px;
+      padding-top: 9px;
+      border-top: 1px dashed var(--line);
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.38;
+    }
+    .agenda b {
+      display: block;
+      color: #324b50;
+      margin-bottom: 2px;
+    }
+    .agenda b.late-text { color: var(--red); }
+    .agenda b.done-text { color: var(--green); }
+    .agenda b.running-text { color: var(--blue); }
+    .empty, .error {
+      margin: 18px;
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      color: var(--muted);
+    }
+    .error {
+      border-color: #fecaca;
+      color: #991b1b;
+      background: #fff5f5;
+    }
+    dialog {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      max-width: 560px;
+      width: calc(100vw - 32px);
+      max-height: 92vh;
+      padding: 0;
+      box-shadow: 0 24px 60px rgba(15,23,42,.2);
+      overflow: hidden;
+    }
+    dialog::backdrop { background: rgba(15,23,42,.35); }
+    .modal-head, .modal-body, .modal-actions { padding: 14px; }
+    .modal-head {
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+    }
+    .modal-head strong {
+      color: var(--ink);
+      font-size: 16px;
+    }
+    .modal-body {
+      color: #334155;
+      font-size: 13px;
+      line-height: 1.45;
+      max-height: calc(92vh - 124px);
+      overflow: auto;
+    }
+    .modal-grid {
+      display: grid;
+      grid-template-columns: 150px 1fr;
+      gap: 8px;
+    }
+    .modal-grid span:nth-child(odd) { color: var(--muted); }
+    .timeline {
+      grid-column: 1 / -1;
+      margin-top: 16px;
+      padding-top: 14px;
+      border-top: 1px solid var(--line);
+    }
+    .timeline-title {
+      margin-bottom: 10px;
+      color: var(--ink);
+      font-size: 13px;
+      font-weight: 700;
+    }
+    .timeline-list {
+      display: grid;
+      gap: 10px;
+    }
+    .timeline-item {
+      position: relative;
+      display: grid;
+      grid-template-columns: 18px 92px 1fr;
+      gap: 9px;
+      align-items: start;
+    }
+    .timeline-dot {
+      width: 10px;
+      height: 10px;
+      margin-top: 4px;
+      border-radius: 999px;
+      background: #94a3b8;
+    }
+    .timeline-dot.done { background: var(--green); }
+    .timeline-dot.waiting { background: var(--yellow); }
+    .timeline-dot.alert { background: var(--red); }
+    .timeline-label {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .timeline-content strong {
+      display: block;
+      color: var(--ink);
+      font-size: 13px;
+    }
+    .timeline-content span {
+      display: block;
+      margin-top: 2px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.35;
+    }
+    .modal-actions {
+      border-top: 1px solid var(--line);
+      display: flex;
+      justify-content: flex-end;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .schedule-form {
+      display: grid;
+      gap: 10px;
+    }
+    .schedule-form label {
+      display: grid;
+      gap: 4px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .schedule-form input, .schedule-form textarea, .schedule-form select {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 9px 10px;
+      color: #334155;
+      background: #fff;
+      font: inherit;
+      font-size: 13px;
+    }
+    .schedule-form textarea {
+      min-height: 72px;
+      resize: vertical;
+    }
+    .schedule-note {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.4;
+    }
+    .schedule-result {
+      min-height: 18px;
+      color: var(--blue);
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .fiber-editor {
+      grid-column: 1 / -1;
+      margin-top: 14px;
+      padding-top: 12px;
+      border-top: 1px solid var(--line);
+      display: grid;
+      grid-template-columns: minmax(170px, 1fr) auto;
+      gap: 8px;
+      align-items: end;
+    }
+    .fiber-editor label {
+      display: grid;
+      gap: 5px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+    }
+    .fiber-note {
+      grid-column: 1 / -1;
+      min-height: 16px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 650;
+    }
+    .confirm-box {
+      display: none;
+      border: 1px solid #f6c96f;
+      background: #fff9e8;
+      border-radius: 8px;
+      padding: 10px;
+      color: #744210;
+      font-size: 12px;
+      line-height: 1.4;
+    }
+    .confirm-box.active { display: block; }
+    .danger-button {
+      background: var(--red);
+      border-color: var(--red);
+      color: #fff;
+      font-weight: 700;
+    }
+    .danger-button:hover {
+      background: #9b2c2c;
+      border-color: #9b2c2c;
+    }
+    .badge-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      margin-top: 7px;
+    }
+    .scale-chip {
+      display: inline-flex;
+      align-items: center;
+      min-height: 22px;
+      border: 1px solid rgba(142,255,130,.36);
+      background: rgba(255,255,255,.15);
+      border-radius: 999px;
+      padding: 3px 7px;
+      color: #f4fffb;
+      font-size: 11px;
+      font-weight: 700;
+      line-height: 1.2;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.12);
+    }
+    .scale-chip.emcampo { border-color: #b7f7b2; background: var(--vip-green-soft); color: #166534; }
+    .scale-chip.plantao { border-color: #c7dfe4; background: #eef7f8; color: var(--vip-dark); }
+    .scale-chip.warning { border-color: #fecaca; background: #fff5f5; color: #991b1b; }
+    .tech-scale {
+      display: grid;
+      gap: 4px;
+      margin-top: 7px;
+      color: rgba(222,247,249,.78);
+      font-size: 11px;
+      line-height: 1.3;
+      font-weight: 650;
+    }
+    .tech-scale b {
+      color: #d9ffd5;
+      font-size: 12.5px;
+      font-weight: 850;
+    }
+    body.density-compact .topbar {
+      padding-top: 10px;
+      padding-bottom: 11px;
+    }
+    body.density-compact .brand-mark {
+      width: 96px;
+      height: 40px;
+    }
+    body.density-compact h1 {
+      font-size: 18px;
+    }
+    body.density-compact .subtitle,
+    body.density-compact .statusline {
+      font-size: 12px;
+    }
+    body.density-compact .summary {
+      grid-template-columns: repeat(6, minmax(96px, 1fr));
+      margin-top: 10px;
+    }
+    body.density-compact .metric {
+      padding: 7px 8px;
+      font-size: 12px;
+    }
+    body.density-compact .metric b {
+      font-size: 15px;
+    }
+    body.density-compact .tech-head {
+      min-height: 72px;
+      padding: 10px;
+    }
+    body.density-compact .tech-name {
+      font-size: 15px;
+    }
+    body.density-compact .subject {
+      font-size: 13px;
+      margin-top: 8px;
+    }
+    body.density-compact .meta {
+      gap: 4px;
+      margin-top: 8px;
+      font-size: 11px;
+    }
+    body.density-compact .agenda {
+      margin-top: 8px;
+      padding-top: 7px;
+      font-size: 11px;
+    }
+    .scale-dialog {
+      max-width: 980px;
+    }
+    .scale-table {
+      display: grid;
+      gap: 8px;
+      max-height: 58vh;
+      overflow: auto;
+      padding-right: 4px;
+    }
+    .scale-row {
+      display: grid;
+      grid-template-columns: minmax(150px, 1.4fr) minmax(120px, 1fr) minmax(130px, 1fr) minmax(150px, 1.2fr);
+      gap: 8px;
+      align-items: center;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      padding: 8px;
+    }
+    .scale-row.scale-header {
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      background: #f7faf9;
+      color: var(--vip-dark);
+      font-size: 12px;
+      font-weight: 850;
+      text-transform: uppercase;
+      letter-spacing: 0;
+    }
+    .scale-row strong {
+      display: block;
+      color: var(--ink);
+      font-size: 13px;
+    }
+    .scale-row small {
+      display: block;
+      color: var(--muted);
+      font-size: 11px;
+      margin-top: 2px;
+    }
+    .scale-row input,
+    .scale-row select {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 8px;
+      color: #334155;
+      background: #fff;
+      font: inherit;
+      font-size: 12px;
+    }
+    .report-content {
+      display: grid;
+      gap: 12px;
+    }
+    .report-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 8px;
+    }
+    .report-card {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      padding: 10px;
+    }
+    .report-card b {
+      display: block;
+      color: var(--ink);
+      font-size: 18px;
+      margin-bottom: 3px;
+    }
+    .report-card span {
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .report-list {
+      display: grid;
+      gap: 6px;
+      color: #334155;
+      font-size: 13px;
+    }
+    .report-list div {
+      border: 1px solid var(--line);
+      background: #fff;
+      border-radius: 8px;
+      padding: 8px;
+    }
+    .listing-box {
+      margin: 0;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      color: #1a3034;
+      padding: 12px;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      font: 700 13px/1.45 "Segoe UI", Arial, sans-serif;
+    }
+    .copy-fallback-text {
+      width: 100%;
+      min-height: 220px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 10px;
+      color: #1a3034;
+      background: #fff;
+      font: 700 13px/1.45 "Segoe UI", Arial, sans-serif;
+      resize: vertical;
+    }
+    .login-screen {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      display: grid;
+      place-items: center;
+      padding: 20px;
+      background:
+        linear-gradient(180deg, rgba(238,246,247,.96) 0, rgba(248,251,251,.98) 100%),
+        #f8fbfb;
+    }
+    .login-screen[hidden] { display: none; }
+    .login-card {
+      width: min(420px, 100%);
+      border: 1px solid var(--glass-border);
+      background: var(--glass-strong);
+      border-radius: 8px;
+      box-shadow: 0 24px 54px rgba(22,72,80,.16), inset 0 1px 0 rgba(255,255,255,.82);
+      padding: 22px;
+      text-align: center;
+      backdrop-filter: blur(18px) saturate(145%);
+      -webkit-backdrop-filter: blur(18px) saturate(145%);
+    }
+    .login-card img {
+      display: block;
+      width: 156px;
+      height: 66px;
+      object-fit: contain;
+      margin: 0 auto 10px;
+    }
+    .login-card h2 { margin: 14px 0 6px; color: var(--vip-dark); font-size: 22px; font-weight: 850; }
+    .login-card p { margin: 0 0 18px; color: var(--muted); font-size: 13px; line-height: 1.4; font-weight: 600; }
+    .login-card label { display: grid; gap: 6px; margin-bottom: 12px; font-size: 13px; color: var(--muted); text-align: left; font-weight: 750; }
+    .login-card .field { width: 100%; height: 42px; }
+    .login-card .primary-button { width: 100%; height: 42px; margin-top: 2px; }
+    .login-error { min-height: 20px; color: var(--red); font-size: 13px; margin-top: 10px; }
+    .userbar {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 8px;
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 650;
+    }
+    .user-pill {
+      border: 1px solid var(--glass-border);
+      background: rgba(255,255,255,.68);
+      color: var(--vip-dark);
+      border-radius: 999px;
+      padding: 7px 10px;
+      font-weight: 850;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.76), 0 8px 18px rgba(22,72,80,.08);
+      backdrop-filter: blur(12px) saturate(150%);
+      -webkit-backdrop-filter: blur(12px) saturate(150%);
+    }
+    .view-tabs {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      padding: 0 18px 14px;
+      background: linear-gradient(180deg, rgba(248,251,251,.74), rgba(248,251,251,.64));
+      border-bottom: 1px solid rgba(215,227,230,.72);
+      backdrop-filter: blur(18px) saturate(140%);
+      -webkit-backdrop-filter: blur(18px) saturate(140%);
+    }
+    .view-tabs .icon-button {
+      min-width: 108px;
+    }
+    .page-view[hidden] { display: none; }
+    .dashboard-view, .audit-view {
+      padding: 18px;
+      max-width: 1280px;
+      margin: 0 auto;
+    }
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+    .dash-panel {
+      border: 1px solid var(--line);
+      background: #fff;
+      border-radius: 8px;
+      padding: 14px;
+      box-shadow: 0 1px 0 rgba(32,88,96,.04);
+    }
+    .dash-panel h3 { margin: 0 0 10px; color: var(--vip-dark); font-size: 15px; }
+    .dash-number { display: block; color: var(--vip-dark); font-size: 30px; font-weight: 800; }
+    .dash-list { display: grid; gap: 8px; }
+    .dash-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+      align-items: center;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 7px;
+      font-size: 13px;
+    }
+    .dash-row b { color: var(--vip-dark); }
+    .toast-stack {
+      position: fixed;
+      right: 16px;
+      bottom: 16px;
+      z-index: 120;
+      display: grid;
+      gap: 8px;
+      width: min(360px, calc(100vw - 32px));
+    }
+    .toast {
+      border: 1px solid var(--line);
+      border-left: 5px solid var(--vip-dark);
+      background: #fff;
+      box-shadow: var(--shadow);
+      border-radius: 8px;
+      padding: 12px;
+      color: var(--text);
+      font-size: 13px;
+    }
+    .toast strong { display: block; margin-bottom: 4px; color: var(--vip-dark); }
+    .audit-table { display: grid; gap: 8px; }
+    .audit-item {
+      display: grid;
+      grid-template-columns: 180px 160px 1fr;
+      gap: 12px;
+      border: 1px solid var(--line);
+      background: #fff;
+      border-radius: 8px;
+      padding: 10px;
+      font-size: 13px;
+    }
+    .audit-item b { color: var(--vip-dark); }
+    .audit-item code { white-space: pre-wrap; overflow-wrap: anywhere; }
+    @media (max-width: 760px) {
+      .topbar { padding: 8px 10px 10px; }
+      .topline { flex-direction: column; gap: 8px; align-items: stretch; }
+      .brand-area { align-items: flex-start; min-width: 0; width: 100%; }
+      .brand-mark { width: 82px; height: 34px; }
+      h1 { font-size: 16px; }
+      .subtitle, .statusline { font-size: 11.5px; }
+      .filterbar { margin-top: 8px; gap: 6px; }
+      .controls { justify-content: flex-start; gap: 6px; }
+      .controls, .action-group { width: 100%; }
+      .action-group { padding: 3px; gap: 5px; }
+      .field, .icon-button, .toggle { height: 34px; font-size: 12px; }
+      .action-group .icon-button { flex: 1 1 112px; min-width: 0; white-space: normal; line-height: 1.1; }
+      .search-field { min-width: 100%; }
+      .density-switch { margin-left: 0; }
+      .segmented { width: 100%; overflow-x: auto; }
+      .segment { flex: 1 0 auto; height: 28px; padding: 0 8px; font-size: 11px; }
+      .summary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .metric { padding: 7px 8px; font-size: 12px; }
+      .board-wrap { padding: 10px; }
+      .board { grid-auto-columns: minmax(276px, 86vw); gap: 10px; }
+      body.density-compact .board { grid-auto-columns: minmax(260px, 84vw); }
+      .tech-column { height: auto; max-height: none; }
+      .tech-head { min-height: 0; padding: 10px; gap: 8px; }
+      .tech-title-row { gap: 6px; }
+      .tech-name { font-size: 15px; }
+      .tech-total { min-width: 32px; height: 28px; font-size: 13px; }
+      .last-os-pill, .scale-chip { font-size: 10.5px; padding: 3px 6px; }
+      .tech-scale { font-size: 10.5px; }
+      .tech-actions { margin-top: 6px; }
+      .tech-mini-button { min-height: 26px; padding: 5px 7px; font-size: 10.5px; }
+      .column-stats { padding: 7px; gap: 5px; font-size: 10.5px; }
+      .column-stats span { padding: 6px 4px; }
+      .cards { padding: 8px; }
+      .os-card { padding: 9px; }
+      .card-top { gap: 7px; }
+      .card-top strong { font-size: 14px; }
+      .pill { font-size: 10.5px; padding: 4px 6px; max-width: 44%; white-space: normal; text-align: center; }
+      .subject { font-size: 12.5px; margin-top: 7px; }
+      .meta, .agenda { font-size: 11px; margin-top: 7px; }
+      dialog { width: calc(100vw - 16px); max-height: 92vh; }
+      .modal-head, .modal-body, .modal-actions { padding: 10px; }
+      .modal-head { gap: 8px; }
+      .modal-head strong { font-size: 14px; }
+      .modal-body { font-size: 12px; max-height: calc(92vh - 112px); }
+      .modal-actions { justify-content: stretch; }
+      .modal-actions .icon-button { flex: 1 1 130px; min-width: 0; white-space: normal; }
+      .modal-grid { grid-template-columns: 1fr; }
+      .timeline-item { grid-template-columns: 18px 78px 1fr; }
+      .fiber-editor { grid-template-columns: 1fr; }
+      .scale-row, .report-grid { grid-template-columns: 1fr; }
+      .scale-table { max-height: 60vh; }
+      .listing-box, .copy-fallback-text { font-size: 11.5px; line-height: 1.42; padding: 9px; }
+      .dashboard-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .audit-item { grid-template-columns: 1fr; }
+      .view-tabs { padding: 0 12px 12px; }
+      .view-tabs .icon-button { min-width: 0; flex: 1 1 92px; }
+      .dashboard-view, .audit-view { padding: 12px; }
+      .toast-stack { right: 8px; bottom: 8px; width: calc(100vw - 16px); }
+    }
+  </style>
+</head>
+<body>
+  <section class="login-screen" id="loginScreen">
+    <form class="login-card" id="loginForm">
+      <img src="/static/vip-logo.png" alt="VIP Telecom" />
+      <h2>Acesso ao Kanban</h2>
+      <p>Entre com perfil ADM ou Supervisor para acessar a operacao.</p>
+      <label>
+        Usuario
+        <input class="field" id="loginUser" autocomplete="username" value="admin" />
+      </label>
+      <label>
+        Senha
+        <input class="field" id="loginPassword" type="password" autocomplete="current-password" />
+      </label>
+      <button class="icon-button primary-button" type="submit">Entrar</button>
+      <div class="login-error" id="loginError"></div>
+    </form>
+  </section>
+
+  <header class="topbar">
+    <div class="topline">
+      <div class="brand-area">
+        <img class="brand-mark" src="/static/vip-logo.png" alt="VIP Telecom" />
+        <div class="title-stack">
+          <h1>Kanban da Alta Performance Tecnica VIP TELECOM</h1>
+          <div class="subtitle" id="subtitle">Carregando bandeja...</div>
+        </div>
+      </div>
+      <div class="controls">
+        <input class="field" id="dayInput" type="date" />
+        <select class="field" id="filialInput">
+          <option value="1">1 - VIP TELECOM UDP - Uniao dos Palmares/AL</option>
+          <option value="2">2 - VIP TELECOM MURICI - Murici/AL</option>
+          <option value="3">3 - VIP TELECOM QUEIMADAS - Queimadas/PB</option>
+          <option value="4">4 - GEO TELECOM - Moreno/PE</option>
+          <option value="6">6 - VIP TELECOM PE - Belo Jardim/PE</option>
+          <option value="7">7 - NETCITY CORPORATIVO - Belo Jardim/PE</option>
+          <option value="8">8 - J J DA SILVA TECNOLOGIA - Uniao Corp/AL</option>
+          <option value="10">10 - TOTALNET - Santana do Mundau/AL</option>
+        </select>
+        <div class="action-group">
+          <button class="icon-button primary-button" id="consultButton" title="Consultar" aria-label="Consultar">Consultar</button>
+          <button class="icon-button" id="refreshButton" title="Atualizar" aria-label="Atualizar">Atualizar</button>
+          <button class="icon-button accent-button" id="scaleButton" title="Alimentar escala do dia" aria-label="Alimentar escala do dia">Escala do dia</button>
+          <button class="icon-button" id="reportButton" title="Relatorio do dia" aria-label="Relatorio do dia">Relatorio</button>
+        </div>
+      </div>
+    </div>
+    <div class="filterbar">
+      <input class="field search-field" id="searchInput" type="search" placeholder="Buscar OS, cliente, assunto ou tecnico" />
+      <div class="segmented" role="tablist" aria-label="Filtro de status">
+        <button class="segment active" data-state="all" type="button">Todas</button>
+        <button class="segment" data-state="late" type="button">Atrasadas</button>
+        <button class="segment" data-state="running" type="button">Em execucao</button>
+        <button class="segment" data-state="waiting" type="button">Agendadas</button>
+        <button class="segment" data-state="done" type="button">Finalizadas</button>
+      </div>
+      <label class="toggle"><input id="hideDoneInput" type="checkbox" /> ocultar finalizadas</label>
+      <div class="segmented density-switch" role="tablist" aria-label="Densidade dos cards">
+        <button class="segment active" data-density="comfortable" type="button">Confortavel</button>
+        <button class="segment" data-density="compact" type="button">Compacto</button>
+      </div>
+    </div>
+    <section class="summary">
+      <div class="metric"><b id="totalMetric">0</b> OS</div>
+      <div class="metric"><b id="techMetric">0</b> tecnicos</div>
+      <div class="metric"><b id="waitingMetric">0</b> agendadas</div>
+      <div class="metric"><b id="doneMetric">0</b> finalizadas</div>
+      <div class="metric"><b id="runningMetric">0</b> em execucao</div>
+      <div class="metric"><b id="lateMetric">0</b> atrasadas</div>
+    </section>
+    <div class="statusline" id="statusline">Consulta com snapshot local de 30 minutos e checagem automatica a cada 5 minutos. Escrita protegida por confirmacao.</div>
+    <div class="userbar">
+      <span class="user-pill" id="userPill">Sem login</span>
+      <button class="icon-button" id="notifyButton" type="button">Alertas e som</button>
+      <button class="icon-button" id="logoutButton" type="button">Sair</button>
+    </div>
+  </header>
+
+  <nav class="view-tabs" aria-label="Areas do Kanban">
+    <button class="icon-button primary-button" data-view="boardView" type="button">Kanban</button>
+    <button class="icon-button" id="planningButton" type="button">Planejamento</button>
+    <button class="icon-button" id="showFiltersButton" type="button" hidden>Mostrar filtros</button>
+    <button class="icon-button" data-view="dashboardView" type="button">Dashboard</button>
+    <button class="icon-button" data-view="auditView" id="auditTab" type="button" hidden>Auditoria</button>
+    <button class="icon-button" data-view="usersView" id="usersTab" type="button" hidden>Gerencial</button>
+  </nav>
+
+  <main class="board-wrap page-view" id="boardView">
+    <section class="board" id="board" aria-label="Kanban por tecnico"></section>
+  </main>
+
+  <main class="dashboard-view page-view" id="dashboardView" hidden>
+    <section class="dashboard-grid" id="dashboardGrid"></section>
+    <section class="dash-panel">
+      <h3>OS executadas por turno</h3>
+      <div class="dash-list" id="shiftDashboard"></div>
+    </section>
+  </main>
+
+  <main class="audit-view page-view" id="auditView" hidden>
+    <section class="dash-panel">
+      <h3>Auditoria de acessos e movimentacoes</h3>
+      <div class="audit-table" id="auditTable"></div>
+    </section>
+  </main>
+
+  <main class="audit-view page-view" id="usersView" hidden>
+    <section class="dash-panel">
+      <h3>Painel gerencial ADM</h3>
+      <form class="schedule-form" id="userCreateForm">
+        <label>
+          Usuario
+          <input class="field" id="newUsername" autocomplete="off" placeholder="ex.: junior" required />
+        </label>
+        <label>
+          Nome
+          <input class="field" id="newUserName" autocomplete="off" placeholder="ex.: Supervisor Junior" required />
+        </label>
+        <label>
+          Perfil
+          <select class="field" id="newUserRole">
+            <option value="supervisor">Supervisor</option>
+            <option value="admin">ADM</option>
+          </select>
+        </label>
+        <label>
+          Senha
+          <input class="field" id="newUserPassword" type="password" autocomplete="new-password" required />
+        </label>
+        <button class="icon-button primary-button" id="createUserButton" type="submit">Criar login</button>
+        <div class="schedule-result" id="userCreateResult"></div>
+      </form>
+      <h3>Logins cadastrados</h3>
+      <div class="audit-table" id="usersTable"></div>
+    </section>
+  </main>
+
+  <div class="toast-stack" id="toastStack"></div>
+
+  <dialog id="detailDialog">
+    <div class="modal-head">
+      <strong id="modalTitle">OS</strong>
+      <button class="icon-button" id="closeDialog" title="Fechar" aria-label="Fechar">x</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-grid" id="modalGrid"></div>
+      <div class="fiber-editor">
+        <label>
+          Fibra utilizada (m)
+          <input class="field" id="fiberInput" type="number" min="0" step="1" placeholder="Ex.: 120" />
+        </label>
+        <button class="icon-button primary-button" id="saveFiberButton" type="button">Salvar fibra</button>
+        <div class="fiber-note" id="fiberNote"></div>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="icon-button" id="scheduleFromDetail" title="Agendar OS" aria-label="Agendar OS">Agendar</button>
+      <button class="icon-button" id="copyButton" title="Copiar OS" aria-label="Copiar OS">Copiar</button>
+      <button class="icon-button" id="closeDialogBottom" title="Fechar" aria-label="Fechar">Fechar</button>
+    </div>
+  </dialog>
+
+  <dialog id="scheduleDialog">
+    <form method="dialog" id="scheduleForm">
+      <div class="modal-head">
+        <strong id="scheduleTitle">Agendar OS</strong>
+        <button class="icon-button" id="closeSchedule" title="Fechar" aria-label="Fechar" type="button">x</button>
+      </div>
+      <div class="modal-body">
+        <div class="schedule-form">
+          <label>
+            Data e hora
+            <input id="scheduleStart" type="datetime-local" required />
+          </label>
+          <label>
+            Fim da janela / execucao
+            <input id="scheduleEnd" type="datetime-local" />
+          </label>
+          <label>
+            Tecnico
+            <select id="scheduleTech"></select>
+          </label>
+          <label>
+            Acao
+            <select id="scheduleStatus">
+              <option value="agendar">Agendar</option>
+              <option value="marcar_reagendamento">Marcar para reagendamento</option>
+              <option value="analisar">Analisar</option>
+              <option value="encaminhar">Encaminhar</option>
+              <option value="mensagem">Registrar mensagem</option>
+              <option value="executar">Executar</option>
+              <option value="finalizar">Finalizar</option>
+              <option value="reabrir">Reabrir</option>
+            </select>
+          </label>
+          <label>
+            Observacao / descricao da acao
+            <textarea id="scheduleMessage">Agendamento solicitado pelo Kanban da Alta Performance Tecnica VIP TELECOM.</textarea>
+          </label>
+          <div class="schedule-note" id="scheduleNote">
+            Ao confirmar, a acao sera gravada direto no IXC.
+          </div>
+          <div class="confirm-box" id="confirmBox">
+            Payload validado. A proxima confirmacao vai gravar de verdade no IXC.
+          </div>
+          <div class="schedule-result" id="scheduleResult"></div>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button class="icon-button" id="cancelSchedule" type="button">Cancelar</button>
+        <button class="icon-button danger-button" id="testSchedule" type="submit">Gravar no IXC</button>
+        <button class="icon-button danger-button" id="writeSchedule" type="button" hidden>Confirmar no IXC</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="scaleDialog" class="scale-dialog">
+    <div class="modal-head">
+      <strong>Alimentar escala do dia</strong>
+      <button class="icon-button" id="closeScale" title="Fechar" aria-label="Fechar" type="button">x</button>
+    </div>
+    <div class="modal-body">
+      <div class="scale-table" id="scaleTable"></div>
+      <div class="schedule-note" id="scaleNote">Escala local. Nao altera dados no IXC.</div>
+    </div>
+      <div class="modal-actions">
+        <button class="icon-button" id="cancelScale" type="button">Cancelar</button>
+        <button class="icon-button" id="scaleListingButton" type="button">Gerar listagem</button>
+        <button class="icon-button primary-button" id="saveScale" type="button">Salvar escala</button>
+      </div>
+  </dialog>
+
+  <dialog id="reportDialog" class="scale-dialog">
+    <div class="modal-head">
+      <strong>Relatorio do dia</strong>
+      <button class="icon-button" id="closeReport" title="Fechar" aria-label="Fechar" type="button">x</button>
+    </div>
+    <div class="modal-body">
+      <div class="report-content" id="reportContent"></div>
+    </div>
+    <div class="modal-actions">
+      <button class="icon-button" id="copyReport" type="button">Copiar resumo</button>
+      <button class="icon-button" id="closeReportBottom" type="button">Fechar</button>
+    </div>
+  </dialog>
+
+  <dialog id="copyFallbackDialog" class="scale-dialog">
+    <div class="modal-head">
+      <strong>Copiar manualmente</strong>
+      <button class="icon-button" id="closeCopyFallback" title="Fechar" aria-label="Fechar" type="button">x</button>
+    </div>
+    <div class="modal-body">
+      <p class="schedule-note">O navegador bloqueou a copia automatica. O texto abaixo ja esta selecionado.</p>
+      <textarea class="copy-fallback-text" id="copyFallbackText" readonly></textarea>
+    </div>
+    <div class="modal-actions">
+      <button class="icon-button" id="closeCopyFallbackBottom" type="button">Fechar</button>
+    </div>
+  </dialog>
+
+  <script>
+    const loginScreen = document.querySelector("#loginScreen");
+    const loginForm = document.querySelector("#loginForm");
+    const loginUser = document.querySelector("#loginUser");
+    const loginPassword = document.querySelector("#loginPassword");
+    const loginError = document.querySelector("#loginError");
+    const userPill = document.querySelector("#userPill");
+    const notifyButton = document.querySelector("#notifyButton");
+    const logoutButton = document.querySelector("#logoutButton");
+    const viewButtons = [...document.querySelectorAll("[data-view]")];
+    const planningButton = document.querySelector("#planningButton");
+    const showFiltersButton = document.querySelector("#showFiltersButton");
+    const filterbar = document.querySelector(".filterbar");
+    const boardView = document.querySelector("#boardView");
+    const dashboardView = document.querySelector("#dashboardView");
+    const auditView = document.querySelector("#auditView");
+    const usersView = document.querySelector("#usersView");
+    const auditTab = document.querySelector("#auditTab");
+    const usersTab = document.querySelector("#usersTab");
+    const dashboardGrid = document.querySelector("#dashboardGrid");
+    const shiftDashboard = document.querySelector("#shiftDashboard");
+    const auditTable = document.querySelector("#auditTable");
+    const userCreateForm = document.querySelector("#userCreateForm");
+    const newUsername = document.querySelector("#newUsername");
+    const newUserName = document.querySelector("#newUserName");
+    const newUserRole = document.querySelector("#newUserRole");
+    const newUserPassword = document.querySelector("#newUserPassword");
+    const userCreateResult = document.querySelector("#userCreateResult");
+    const usersTable = document.querySelector("#usersTable");
+    const toastStack = document.querySelector("#toastStack");
+    const board = document.querySelector("#board");
+    const dayInput = document.querySelector("#dayInput");
+    const filialInput = document.querySelector("#filialInput");
+    const consultButton = document.querySelector("#consultButton");
+    const refreshButton = document.querySelector("#refreshButton");
+    const scaleButton = document.querySelector("#scaleButton");
+    const reportButton = document.querySelector("#reportButton");
+    const searchInput = document.querySelector("#searchInput");
+    const hideDoneInput = document.querySelector("#hideDoneInput");
+    const stateButtons = [...document.querySelectorAll("[data-state]")];
+    const densityButtons = [...document.querySelectorAll("[data-density]")];
+    const subtitle = document.querySelector("#subtitle");
+    const statusline = document.querySelector("#statusline");
+    const dialog = document.querySelector("#detailDialog");
+    const modalTitle = document.querySelector("#modalTitle");
+    const modalGrid = document.querySelector("#modalGrid");
+    const closeDialog = document.querySelector("#closeDialog");
+    const closeDialogBottom = document.querySelector("#closeDialogBottom");
+    const copyButton = document.querySelector("#copyButton");
+    const fiberInput = document.querySelector("#fiberInput");
+    const saveFiberButton = document.querySelector("#saveFiberButton");
+    const fiberNote = document.querySelector("#fiberNote");
+    const scheduleFromDetail = document.querySelector("#scheduleFromDetail");
+    const scheduleDialog = document.querySelector("#scheduleDialog");
+    const scheduleForm = document.querySelector("#scheduleForm");
+    const scheduleTitle = document.querySelector("#scheduleTitle");
+    const scheduleStart = document.querySelector("#scheduleStart");
+    const scheduleEnd = document.querySelector("#scheduleEnd");
+    const scheduleTech = document.querySelector("#scheduleTech");
+    const scheduleStatus = document.querySelector("#scheduleStatus");
+    const scheduleMessage = document.querySelector("#scheduleMessage");
+    const scheduleNote = document.querySelector("#scheduleNote");
+    const confirmBox = document.querySelector("#confirmBox");
+    const scheduleResult = document.querySelector("#scheduleResult");
+    const closeSchedule = document.querySelector("#closeSchedule");
+    const cancelSchedule = document.querySelector("#cancelSchedule");
+    const testSchedule = document.querySelector("#testSchedule");
+    const writeSchedule = document.querySelector("#writeSchedule");
+    const scaleDialog = document.querySelector("#scaleDialog");
+    const closeScale = document.querySelector("#closeScale");
+    const cancelScale = document.querySelector("#cancelScale");
+    const saveScale = document.querySelector("#saveScale");
+    const scaleListingButton = document.querySelector("#scaleListingButton");
+    const scaleTable = document.querySelector("#scaleTable");
+    const scaleNote = document.querySelector("#scaleNote");
+    const reportDialog = document.querySelector("#reportDialog");
+    const closeReport = document.querySelector("#closeReport");
+    const closeReportBottom = document.querySelector("#closeReportBottom");
+    const reportContent = document.querySelector("#reportContent");
+    const copyReport = document.querySelector("#copyReport");
+    const copyFallbackDialog = document.querySelector("#copyFallbackDialog");
+    const closeCopyFallback = document.querySelector("#closeCopyFallback");
+    const closeCopyFallbackBottom = document.querySelector("#closeCopyFallbackBottom");
+    const copyFallbackText = document.querySelector("#copyFallbackText");
+    let selectedOs = null;
+    let schedulingOs = null;
+    let targetColumn = null;
+    let pendingWritePayload = null;
+    let rawData = null;
+    let technicianRoster = [];
+    let currentScale = null;
+    let lastReportText = "";
+    let activeState = "all";
+    let activeDensity = localStorage.getItem("vip-kanban-density") || "comfortable";
+    let sessionToken = localStorage.getItem("vip-kanban-session") || "";
+    let currentUser = null;
+    let newOsAudioContext = null;
+    let newOsSoundUnlocked = false;
+    let planningMode = false;
+    let planningFiltersVisible = false;
+    const seenOsStoragePrefix = "vip-kanban-seen-os";
+    const newOsPollMs = 5 * 60 * 1000;
+
+    function authHeaders(extra = {}) {
+      return sessionToken ? { ...extra, "X-VIP-Session": sessionToken } : extra;
+    }
+
+    async function apiFetch(url, options = {}) {
+      const headers = authHeaders(options.headers || {});
+      const response = await fetch(url, { ...options, headers });
+      if (response.status === 401) {
+        localStorage.removeItem("vip-kanban-session");
+        sessionToken = "";
+        currentUser = null;
+        loginScreen.hidden = false;
+        throw new Error("Sessao expirada. Faca login novamente.");
+      }
+      return response;
+    }
+
+    function toast(title, message) {
+      const item = document.createElement("div");
+      item.className = "toast";
+      item.innerHTML = `<strong>${title}</strong><span>${message}</span>`;
+      toastStack.append(item);
+      setTimeout(() => item.remove(), 7000);
+    }
+
+    function showCopyFallback(text) {
+      copyFallbackText.value = text;
+      copyFallbackDialog.showModal();
+      setTimeout(() => {
+        copyFallbackText.focus();
+        copyFallbackText.select();
+      }, 50);
+    }
+
+    async function copyText(text, button, defaultLabel) {
+      if (!text) {
+        toast("Nada para copiar", "Nao encontrei texto para enviar para a area de transferencia.");
+        return false;
+      }
+      const originalLabel = defaultLabel || button?.textContent || "Copiar";
+      try {
+        if (!navigator.clipboard?.writeText) throw new Error("Clipboard indisponivel");
+        await navigator.clipboard.writeText(text);
+        if (button) {
+          button.textContent = "Copiado!";
+          setTimeout(() => { button.textContent = originalLabel; }, 1200);
+        }
+        toast("Copiado!", "Texto copiado para a area de transferencia.");
+        return true;
+      } catch (clipboardError) {
+        try {
+          const helper = document.createElement("textarea");
+          helper.value = text;
+          helper.setAttribute("readonly", "");
+          helper.style.position = "fixed";
+          helper.style.top = "-1000px";
+          helper.style.left = "-1000px";
+          document.body.append(helper);
+          helper.focus();
+          helper.select();
+          const copied = document.execCommand("copy");
+          helper.remove();
+          if (!copied) throw clipboardError;
+          if (button) {
+            button.textContent = "Copiado!";
+            setTimeout(() => { button.textContent = originalLabel; }, 1200);
+          }
+          toast("Copiado!", "Texto copiado para a area de transferencia.");
+          return true;
+        } catch {
+          showCopyFallback(text);
+          toast("Copiar manualmente", "O navegador bloqueou a copia automatica. Use o texto selecionado na tela.");
+          return false;
+        }
+      }
+    }
+
+    function browserNotify(title, body) {
+      toast(title, body);
+      if ("Notification" in window && Notification.permission === "granted") {
+        new Notification(title, { body });
+      }
+    }
+
+    async function unlockNewOsSound() {
+      try {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        if (!AudioContext) return false;
+        if (!newOsAudioContext) newOsAudioContext = new AudioContext();
+        if (newOsAudioContext.state === "suspended") await newOsAudioContext.resume();
+        newOsSoundUnlocked = newOsAudioContext.state === "running";
+        return newOsSoundUnlocked;
+      } catch {
+        newOsSoundUnlocked = false;
+        return false;
+      }
+    }
+
+    function playNewOsSound() {
+      const ctx = newOsAudioContext;
+      if (!ctx || ctx.state !== "running") return false;
+      const start = ctx.currentTime;
+      const master = ctx.createGain();
+      master.gain.setValueAtTime(0.0001, start);
+      master.gain.exponentialRampToValueAtTime(0.16, start + 0.018);
+      master.gain.exponentialRampToValueAtTime(0.0001, start + 0.72);
+      master.connect(ctx.destination);
+
+      [660, 880, 1175].forEach((frequency, index) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        const toneStart = start + (index * 0.16);
+        osc.type = "sine";
+        osc.frequency.setValueAtTime(frequency, toneStart);
+        gain.gain.setValueAtTime(0.0001, toneStart);
+        gain.gain.exponentialRampToValueAtTime(0.28, toneStart + 0.018);
+        gain.gain.exponentialRampToValueAtTime(0.0001, toneStart + 0.18);
+        osc.connect(gain);
+        gain.connect(master);
+        osc.start(toneStart);
+        osc.stop(toneStart + 0.22);
+      });
+      return true;
+    }
+
+    function currentBoardScope() {
+      return `${dayInput.value || today()}::filial-${filialInput.value || "1"}`;
+    }
+
+    function seenOsStorageKey(scope = currentBoardScope()) {
+      return `${seenOsStoragePrefix}:${scope}`;
+    }
+
+    function flattenOsItems(data) {
+      return (data?.columns || []).flatMap((column) => column.items || []);
+    }
+
+    function readSeenOsIds(scope = currentBoardScope()) {
+      try {
+        const value = JSON.parse(localStorage.getItem(seenOsStorageKey(scope)) || "[]");
+        return new Set(Array.isArray(value) ? value.map(String) : []);
+      } catch {
+        return new Set();
+      }
+    }
+
+    function writeSeenOsIds(ids, scope = currentBoardScope()) {
+      const values = [...ids].filter(Boolean).slice(-800);
+      localStorage.setItem(seenOsStorageKey(scope), JSON.stringify(values));
+    }
+
+    function monitorNewOs(data) {
+      const scope = currentBoardScope();
+      const items = flattenOsItems(data);
+      const currentIds = new Set(items.map((item) => String(item.id || "")).filter(Boolean));
+      const seenIds = readSeenOsIds(scope);
+      if (!seenIds.size) {
+        writeSeenOsIds(currentIds, scope);
+        return;
+      }
+
+      const newItems = items.filter((item) => {
+        const id = String(item.id || "");
+        return id && !seenIds.has(id);
+      });
+      writeSeenOsIds(currentIds, scope);
+      if (!newItems.length) return;
+
+      const first = newItems[0];
+      const technician = first.tecnico_curto || first.tecnico || "tecnico ainda nao definido";
+      const filial = filialInput.options[filialInput.selectedIndex]?.text || `Filial ${filialInput.value}`;
+      const plural = newItems.length > 1 ? `${newItems.length} novas OS` : `Nova OS ${first.id}`;
+      const body = `${plural} em ${filial}. Tecnico: ${technician}.`;
+      playNewOsSound();
+      browserNotify("Nova OS aberta", body);
+    }
+
+    async function ensureNotificationPermission() {
+      const soundReady = await unlockNewOsSound();
+      if (soundReady) playNewOsSound();
+      if (!("Notification" in window)) {
+        toast("Alertas", soundReady ? "Som de nova OS ativado." : "Este navegador nao suporta notificacoes nativas.");
+        return;
+      }
+      const result = await Notification.requestPermission();
+      const soundText = soundReady ? " Som ativado." : " Clique novamente se o som nao tocar.";
+      toast("Alertas", result === "granted" ? `Notificacoes do navegador ativadas.${soundText}` : `Permissao de notificacao nao concedida.${soundText}`);
+    }
+
+    function setUser(user) {
+      currentUser = user;
+      userPill.textContent = `${user.name} | ${user.role === "admin" ? "ADM" : "Supervisor"}`;
+      auditTab.hidden = user.role !== "admin";
+      usersTab.hidden = user.role !== "admin";
+      loginScreen.hidden = true;
+    }
+
+    async function verifySession() {
+      if (!sessionToken) return false;
+      try {
+        const response = await apiFetch("/api/me");
+        const payload = await response.json();
+        if (!response.ok) throw new Error(payload.detail || "Sessao invalida.");
+        setUser(payload.user);
+        return true;
+      } catch {
+        localStorage.removeItem("vip-kanban-session");
+        sessionToken = "";
+        return false;
+      }
+    }
+
+    async function doLogin(event) {
+      event.preventDefault();
+      loginError.textContent = "";
+      await unlockNewOsSound();
+      const response = await fetch("/api/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username: loginUser.value, password: loginPassword.value }),
+      });
+      const payload = await response.json();
+      if (!response.ok) {
+        loginError.textContent = payload.detail || "Falha no login.";
+        return;
+      }
+      sessionToken = payload.token;
+      localStorage.setItem("vip-kanban-session", sessionToken);
+      setUser(payload.user);
+      toast("Login realizado", `Perfil ${payload.user.role === "admin" ? "ADM" : "Supervisor"} ativo.`);
+      await loadBoard();
+    }
+
+    async function doLogout() {
+      try {
+        await apiFetch("/api/logout", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ token: sessionToken }),
+        });
+      } catch {}
+      localStorage.removeItem("vip-kanban-session");
+      sessionToken = "";
+      currentUser = null;
+      loginScreen.hidden = false;
+    }
+
+    function today() {
+      const now = new Date();
+      const offset = now.getTimezoneOffset();
+      return new Date(now.getTime() - offset * 60000).toISOString().slice(0, 10);
+    }
+
+    function fmtDateTime(value, mode = "time") {
+      if (!value || String(value).startsWith("0000")) return "--";
+      const normalized = String(value).replace(" ", "T");
+      const date = new Date(normalized);
+      if (Number.isNaN(date.getTime())) return value;
+      if (mode === "date") return date.toLocaleDateString("pt-BR");
+      return date.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" });
+    }
+
+    function setDensity(density) {
+      activeDensity = density === "compact" ? "compact" : "comfortable";
+      document.body.classList.toggle("density-compact", activeDensity === "compact");
+      densityButtons.forEach((button) => {
+        button.classList.toggle("active", button.dataset.density === activeDensity);
+      });
+      localStorage.setItem("vip-kanban-density", activeDensity);
+    }
+
+    function fmtDateTimeFull(value) {
+      if (!value || String(value).startsWith("0000")) return "--";
+      const normalized = String(value).replace(" ", "T");
+      const date = new Date(normalized);
+      if (Number.isNaN(date.getTime())) return value;
+      return `${date.toLocaleDateString("pt-BR")} ${date.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })}`;
+    }
+
+    function toDateTimeLocal(value) {
+      if (!value || String(value).startsWith("0000")) return `${dayInput.value}T08:00`;
+      const normalized = String(value).replace(" ", "T").slice(0, 16);
+      return normalized.includes("T") ? normalized : `${dayInput.value}T08:00`;
+    }
+
+    function fromDateToDateTimeLocal(value) {
+      const offset = value.getTimezoneOffset();
+      return new Date(value.getTime() - offset * 60000).toISOString().slice(0, 16);
+    }
+
+    function suggestedScheduleWindow(item) {
+      const now = new Date();
+      now.setMinutes(Math.ceil((now.getMinutes() + 10) / 5) * 5, 0, 0);
+      const currentStart = new Date(toDateTimeLocal(item.data_agenda));
+      const start = Number.isNaN(currentStart.getTime()) || currentStart < now
+        ? fromDateToDateTimeLocal(now)
+        : toDateTimeLocal(item.data_agenda);
+      const currentEnd = new Date(toDateTimeLocal(item.data_agenda_final));
+      const startDate = new Date(start);
+      const maxEnd = new Date(startDate.getTime() + 8 * 60 * 60000);
+      const minEnd = new Date(startDate.getTime() + 60 * 60000);
+      const end = Number.isNaN(currentEnd.getTime()) || currentEnd <= startDate || currentEnd > maxEnd
+        ? fromDateToDateTimeLocal(minEnd)
+        : toDateTimeLocal(item.data_agenda_final);
+      return { start, end };
+    }
+
+    function toIxcDateTime(value) {
+      if (!value) return "";
+      return `${value.replace("T", " ")}:00`;
+    }
+
+    function el(tag, attrs = {}, children = []) {
+      const node = document.createElement(tag);
+      Object.entries(attrs).forEach(([key, value]) => {
+        if (key === "class") node.className = value;
+        else if (key === "text") node.textContent = value;
+        else node.setAttribute(key, value);
+      });
+      children.forEach((child) => node.append(child));
+      return node;
+    }
+
+    const scaleSituations = ["Em campo", "Folga", "Ausente", "Atestado", "Sem escala"];
+    const scaleFunctions = ["Suporte", "Suporte do plantao", "Plantao", "Retirada", "Instalacao", "Sem escala"];
+
+    function optionList(values, selected = "") {
+      return values.map((value) => el("option", { value, text: value || "Sem escala" })).map((option) => {
+        option.selected = option.value === selected;
+        return option;
+      });
+    }
+
+    function scaleForTech(id) {
+      const selectedId = String(id || "");
+      if (!selectedId) return null;
+      const fromScale = (currentScale?.items || []).find((item) => String(item.id_tecnico || "") === selectedId);
+      if (fromScale) return fromScale;
+      const column = (rawData?.columns || []).find((item) => String(item.id_tecnico || "") === selectedId);
+      return column?.escala || null;
+    }
+
+    function scaleClassFor(situacao) {
+      const key = String(situacao || "").toLowerCase();
+      if (key.includes("plantao")) return "plantao";
+      if (key === "em campo") return "emcampo";
+      if (["folga", "atestado", "sem escala"].includes(key)) return "warning";
+      return "";
+    }
+
+    function scaleBadges(escala) {
+      if (!escala) return [];
+      const badges = [];
+      if (escala.situacao) badges.push({ text: escala.situacao, kind: scaleClassFor(escala.situacao) });
+      if (escala.funcao) badges.push({ text: escala.funcao, kind: "" });
+      if (escala.dupla_nome) badges.push({ text: `Dupla: ${escala.dupla_nome}`, kind: "plantao" });
+      if (escala.fora_da_escala) badges.push({ text: "Fora da escala", kind: "warning" });
+      return badges;
+    }
+
+    async function fetchScale() {
+      const params = new URLSearchParams({ day: dayInput.value, filial: filialInput.value });
+      const response = await apiFetch(`/api/scale?${params.toString()}`);
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.detail || "Falha ao carregar escala");
+      currentScale = data;
+      return data;
+    }
+
+    function metric(id, value) {
+      document.querySelector(id).textContent = value || 0;
+    }
+
+    function renderMetrics(data) {
+      metric("#totalMetric", data.summary.total);
+      metric("#techMetric", data.summary.tecnicos);
+      metric("#waitingMetric", data.summary.states.waiting);
+      metric("#doneMetric", data.summary.states.done);
+      metric("#runningMetric", data.summary.states.running);
+      metric("#lateMetric", data.summary.states.late);
+      const status = Object.entries(data.summary.status || {}).map(([k, v]) => `${k}=${v}`).join(" / ");
+      const cacheSource = data.cache?.source || (data.cache?.hit ? "cache" : "ixc_live");
+      const sourceLabels = {
+        memory: "cache em memoria",
+        snapshot: "snapshot local",
+        ixc_live: "IXC ao vivo",
+      };
+      const cache = sourceLabels[cacheSource] || cacheSource;
+      const age = Number.isFinite(data.cache?.age_seconds) ? `, idade ${data.cache.age_seconds}s` : "";
+      const serverMs = data.performance?.consulta_total_ms || data.performance?.served_from_cache_ms || 0;
+      const browserMs = data.performance?.browser_ms || 0;
+      const timingText = serverMs ? `consulta ${serverMs} ms / tela ${browserMs} ms` : `tela ${browserMs} ms`;
+      subtitle.textContent = `${data.filial_nome} - ${data.date} - atualizado ${fmtDateTime(data.created_at)} - ${cache}`;
+      statusline.textContent = `${cache}. TTL 30 min${age}. ${timingText}. Status IXC: ${status || "sem dados"}. Escrita protegida por confirmacao.`;
+    }
+
+    function normalize(value) {
+      return String(value || "")
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toLowerCase();
+    }
+
+    function matchesFilters(item) {
+      const stateKey = item.state.key;
+      if (hideDoneInput.checked && stateKey === "done") return false;
+      if (activeState === "late" && !item.agenda_alert?.is_late) return false;
+      if (activeState !== "all" && activeState !== "late" && stateKey !== activeState) return false;
+      const query = normalize(searchInput.value);
+      if (!query) return true;
+      const haystack = normalize([
+        item.id,
+        item.id_cliente,
+        item.cliente,
+        item.assunto,
+        item.tecnico,
+        item.cumprimento_agenda?.status,
+        item.cumprimento_agenda?.motivo,
+      ].join(" "));
+      return haystack.includes(query);
+    }
+
+    function visibleData(data) {
+      const columns = data.columns
+        .map((column) => {
+          const items = column.items.filter(matchesFilters);
+          const counts = items.reduce((acc, item) => {
+            acc[item.state.key] = (acc[item.state.key] || 0) + 1;
+            return acc;
+          }, {});
+          const lateCount = items.filter((item) => item.agenda_alert?.is_late).length;
+          return { ...column, total: items.length, counts, late_count: lateCount, items };
+        })
+        .filter((column) => column.items.length > 0);
+
+      const items = columns.flatMap((column) => column.items);
+      const states = items.reduce((acc, item) => {
+        acc[item.state.key] = (acc[item.state.key] || 0) + 1;
+        if (item.agenda_alert?.is_late) acc.late = (acc.late || 0) + 1;
+        return acc;
+      }, {});
+
+      return {
+        ...data,
+        columns,
+        summary: {
+          ...data.summary,
+          total: items.length,
+          tecnicos: columns.length,
+          states,
+        },
+      };
+    }
+
+    function parseDateTime(value) {
+      if (!value || String(value).startsWith("0000-00-00")) return null;
+      const normalized = String(value).replace(" ", "T");
+      const parsed = new Date(normalized);
+      return Number.isNaN(parsed.getTime()) ? null : parsed;
+    }
+
+    function lastFinishedTime(column) {
+      const finished = (column.items || [])
+        .filter((item) => item.status === "F")
+        .map((item) => parseDateTime(item.data_fechamento))
+        .filter(Boolean)
+        .sort((a, b) => b - a);
+      return finished[0] ? finished[0].toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" }) : "";
+    }
+
+    function listingStatusFor(item) {
+      const status = String(item.status || "").toUpperCase();
+      const label = item.status_label || item.state?.label || statusLabelFor(status);
+      if (item.agenda_alert?.is_late) return `⚠️ ${label}`;
+      if (["F", "EX", "EP"].includes(status)) return `🟢 ${label}`;
+      return `⚪ ${label}`;
+    }
+
+    function firstClientName(item) {
+      const value = String(item.cliente || "").trim();
+      if (!value || value.toLowerCase().startsWith("cliente #")) return item.id_cliente ? `ID ${item.id_cliente}` : "Cliente";
+      const clean = value.split("|")[0].trim();
+      return clean.split(/\s+/)[0] || "Cliente";
+    }
+
+    function plainListingStatus(item) {
+      const status = String(item.status || "").toUpperCase();
+      const label = item.status_label || item.state?.label || statusLabelFor(item.status);
+      if (item.agenda_alert?.is_late) return `⚠️ ${label}`;
+      if (["EX", "EP"].includes(status)) return `🟣 ${label}`;
+      if (status === "F") return `🟢 ${label}`;
+      return `⚪ ${label}`;
+    }
+
+    function generateTechnicianListing(column) {
+      const dateText = dayInput.value || today();
+      const escala = column.escala || {};
+      const lines = [
+        `Tecnico: ${column.tecnico_curto || column.tecnico || "Sem tecnico"}`,
+        `Funcao do dia: ${escala.funcao || "Sem escala"}`,
+        `Dupla: ${escala.dupla_nome || "--"}`,
+        `Data: ${dateText}`,
+        "",
+        "OS do Kanban:",
+      ];
+      (column.items || []).forEach((item, index) => {
+        const status = plainListingStatus(item);
+        lines.push(`${index + 1}. OS ${item.id || "--"}. ${firstClientName(item)} | ${item.assunto || "Sem assunto"} | ${status}`);
+      });
+      if (!(column.items || []).length) lines.push("Nenhuma OS na listagem atual.");
+      lastReportText = lines.join("\n");
+      reportContent.innerHTML = "";
+      reportContent.append(el("pre", { class: "listing-box", text: lastReportText }));
+      reportDialog.showModal();
+    }
+
+    function setPlanningMode(enabled) {
+      planningMode = Boolean(enabled);
+      if (!planningMode) planningFiltersVisible = false;
+      document.body.classList.toggle("planning-mode", planningMode);
+      filterbar.classList.toggle("planning-visible", planningMode && planningFiltersVisible);
+      planningButton.classList.toggle("primary-button", planningMode);
+      planningButton.textContent = planningMode ? "Sair do planejamento" : "Planejamento";
+      showFiltersButton.hidden = !planningMode;
+      showFiltersButton.textContent = planningFiltersVisible ? "Ocultar filtros" : "Mostrar filtros";
+      if (planningMode) switchView("boardView");
+    }
+
+    function togglePlanningFilters() {
+      planningFiltersVisible = !planningFiltersVisible;
+      setPlanningMode(planningMode);
+    }
+
+    function renderCard(item) {
+      const stateKey = item.state.key;
+      const agendaLate = Boolean(item.agenda_alert?.is_late);
+      const card = el("article", {
+        class: `os-card ${stateKey}${agendaLate ? " agenda-late" : ""}`,
+        tabindex: "0",
+        draggable: "true",
+      });
+      const top = el("div", { class: "card-top" }, [
+        el("strong", { text: `OS ${item.id}` }),
+        el("span", { class: `pill ${stateKey}`, text: item.status_label || item.state.label }),
+      ]);
+      const subject = el("div", { class: "subject", text: item.assunto || "Sem assunto" });
+      const clientLabel = item.id_cliente ? `${item.cliente} | ID ${item.id_cliente}` : item.cliente;
+      const meta = el("div", { class: "meta" }, [
+        el("span", { text: clientLabel }),
+        el("span", { text: `Agenda ${fmtDateTime(item.data_agenda)}` }),
+        el("span", { text: `Inicio ${fmtDateTime(item.data_inicio)}` }),
+        el("span", { text: `Fim ${fmtDateTime(item.data_fechamento)}` }),
+      ]);
+      if (item.fibra_utilizada_m !== null && item.fibra_utilizada_m !== undefined && item.fibra_utilizada_m !== "") {
+        const source = String(item.fibra_source || "").includes("IXC") ? "IXC" : "local";
+        meta.append(el("span", { text: `Fibra utilizada: ${item.fibra_utilizada_m} m (${source})` }));
+      }
+      const agendaStatus = item.agenda_alert?.status || item.cumprimento_agenda?.status || "sem leitura";
+      const agendaReason = item.agenda_alert?.motivo || item.cumprimento_agenda?.motivo || item.agenda_descricao || "";
+      const agenda = el("div", { class: "agenda" }, [
+        el("b", { class: agendaLate ? "late-text" : `${stateKey}-text`, text: agendaStatus }),
+        el("span", { text: agendaReason }),
+      ]);
+      card.append(top, subject, meta, agenda);
+      card.addEventListener("click", () => openDetails(item));
+      card.addEventListener("keydown", (event) => {
+        if (event.key === "Enter") openDetails(item);
+      });
+      card.addEventListener("dragstart", (event) => {
+        schedulingOs = item;
+        card.classList.add("dragging");
+        event.dataTransfer.effectAllowed = "move";
+        event.dataTransfer.setData("text/plain", item.id);
+      });
+      card.addEventListener("dragend", () => card.classList.remove("dragging"));
+      return card;
+    }
+
+    function statusLabelFor(status) {
+      const labels = {
+        A: "Aberta",
+        AN: "Em analise",
+        AG: "Agendada",
+        EN: "Encaminhada",
+        EX: "Em execucao",
+        EP: "Em execucao",
+        F: "Finalizada",
+      };
+      const key = String(status || "").toUpperCase();
+      return labels[key] || key || "Pendente";
+    }
+
+    function stateForStatus(status) {
+      const key = String(status || "").toUpperCase();
+      if (key === "F") return { key: "done", label: "Finalizada" };
+      if (["EX", "EP"].includes(key)) return { key: "running", label: statusLabelFor(key) };
+      return { key: "waiting", label: statusLabelFor(key) };
+    }
+
+    function refreshColumnStats(column) {
+      const counts = column.items.reduce((acc, item) => {
+        acc[item.state.key] = (acc[item.state.key] || 0) + 1;
+        return acc;
+      }, {});
+      column.total = column.items.length;
+      column.counts = counts;
+      column.late_count = column.items.filter((item) => item.agenda_alert?.is_late).length;
+    }
+
+    function refreshSummary(data) {
+      const items = data.columns.flatMap((column) => column.items);
+      data.summary = {
+        ...data.summary,
+        total: items.length,
+        tecnicos: data.columns.length,
+        status: items.reduce((acc, item) => {
+          const key = item.status || "sem_status";
+          acc[key] = (acc[key] || 0) + 1;
+          return acc;
+        }, {}),
+        states: items.reduce((acc, item) => {
+          acc[item.state.key] = (acc[item.state.key] || 0) + 1;
+          if (item.agenda_alert?.is_late) acc.late = (acc.late || 0) + 1;
+          return acc;
+        }, {}),
+      };
+    }
+
+    function applyVerifiedUpdate(verifiedRow) {
+      if (!rawData || !verifiedRow) return false;
+      let movedItem = null;
+      rawData.columns.forEach((column) => {
+        const index = column.items.findIndex((item) => item.id === String(verifiedRow.id));
+        if (index >= 0) {
+          movedItem = column.items.splice(index, 1)[0];
+        }
+      });
+      if (!movedItem) return false;
+
+      const nextStatus = verifiedRow.status || movedItem.status;
+      const nextTechId = String(verifiedRow.id_tecnico || movedItem.id_tecnico || "");
+      const nextTechName = targetColumn?.id_tecnico === nextTechId
+        ? targetColumn.tecnico
+        : movedItem.tecnico;
+
+      Object.assign(movedItem, {
+        status: nextStatus,
+        status_label: statusLabelFor(nextStatus),
+        state: stateForStatus(nextStatus),
+        id_tecnico: nextTechId,
+        tecnico: nextTechName,
+        data_agenda: verifiedRow.data_agenda || movedItem.data_agenda,
+        data_agenda_final: verifiedRow.data_agenda_final || movedItem.data_agenda_final,
+        data_inicio: verifiedRow.data_inicio || movedItem.data_inicio,
+        data_fechamento: verifiedRow.data_fechamento || movedItem.data_fechamento,
+      });
+
+      let destination = rawData.columns.find((column) => column.id_tecnico === nextTechId);
+      if (!destination) {
+        destination = {
+          tecnico: nextTechName || "Sem tecnico",
+          tecnico_curto: targetColumn?.id_tecnico === nextTechId ? targetColumn.tecnico_curto : shortName(nextTechName),
+          id_tecnico: nextTechId,
+          total: 0,
+          counts: {},
+          late_count: 0,
+          items: [],
+        };
+        rawData.columns.push(destination);
+      }
+      destination.items.push(movedItem);
+      rawData.columns = rawData.columns.filter((column) => column.items.length > 0);
+      rawData.columns.forEach(refreshColumnStats);
+      refreshSummary(rawData);
+      renderBoard(visibleData(rawData));
+      return true;
+    }
+
+    function shortName(value) {
+      const parts = String(value || "").trim().split(/\s+/).filter(Boolean);
+      if (!parts.length) return "Sem tecnico";
+      if (parts.length === 1) return parts[0];
+      return `${parts[0]} ${parts[parts.length - 1]}`;
+    }
+
+    function renderColumn(column) {
+      const counts = column.counts || {};
+      const section = el("section", { class: "tech-column" });
+      const lastFinished = lastFinishedTime(column);
+      const listButton = el("button", { class: "tech-mini-button", type: "button", text: "Gerar Listagem" });
+      listButton.addEventListener("click", (event) => {
+        event.stopPropagation();
+        generateTechnicianListing(column);
+      });
+      section.append(
+        el("header", { class: "tech-head" }, [
+          el("div", { class: "tech-info" }, [
+            el("div", { class: "tech-title-row" }, [
+              el("span", { class: "tech-name", text: column.tecnico_curto }),
+              el("span", { class: "last-os-pill", text: lastFinished ? `Ultima OS: ${lastFinished}` : "Sem finalizacao hoje" }),
+            ]),
+            el("small", { text: column.tecnico }),
+            el("div", { class: "tech-scale" }, [
+              el("b", { text: column.escala?.funcao || column.escala?.situacao || "Sem escala" }),
+              el("span", { text: column.escala?.dupla_nome ? `Dupla: ${column.escala.dupla_nome}` : (column.escala?.situacao || "Sem escala") }),
+            ]),
+            el("div", { class: "tech-actions" }, [listButton]),
+          ]),
+          el("span", { class: "tech-total", text: column.total }),
+        ]),
+        el("div", { class: "column-stats" }, [
+          el("span", { text: `${counts.done || 0} finalizadas` }),
+          el("span", { text: `${counts.running || 0} em execucao` }),
+          el("span", { text: `${column.late_count || 0} atrasadas` }),
+        ])
+      );
+      const cards = el("div", { class: "cards" });
+      cards.addEventListener("dragover", (event) => {
+        event.preventDefault();
+        cards.classList.add("drop-target");
+      });
+      cards.addEventListener("dragleave", () => cards.classList.remove("drop-target"));
+      cards.addEventListener("drop", (event) => {
+        event.preventDefault();
+        cards.classList.remove("drop-target");
+        const item = schedulingOs;
+        if (item) openSchedule(item, column);
+      });
+      column.items.forEach((item) => cards.append(renderCard(item)));
+      section.append(cards);
+      return section;
+    }
+
+    function renderBoard(data) {
+      renderMetrics(data);
+      renderDashboard();
+      board.innerHTML = "";
+      if (!data.columns.length) {
+        board.append(el("div", { class: "empty", text: "Nenhuma OS encontrada para os filtros selecionados." }));
+        return;
+      }
+      data.columns.forEach((column) => board.append(renderColumn(column)));
+    }
+
+    function renderError(error) {
+      board.innerHTML = "";
+      board.append(el("div", { class: "error", text: error }));
+      subtitle.textContent = "Falha ao carregar bandeja";
+      if (String(error || "").toLowerCase().includes("login")) {
+        loginScreen.hidden = false;
+        loginError.textContent = "Entre com seu usuario para abrir o Kanban.";
+      }
+    }
+
+    async function loadTechnicians(options = {}) {
+      const params = new URLSearchParams({ filial: filialInput.value });
+      if (options.refresh) params.set("refresh", "true");
+      try {
+        const response = await apiFetch(`/api/tecnicos?${params.toString()}`);
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.detail || data.error || "Erro ao consultar tecnicos");
+        technicianRoster = data.items || [];
+      } catch (error) {
+        console.warn("Falha ao carregar lista completa de tecnicos; usando colunas do Kanban.", error);
+        technicianRoster = [];
+      }
+    }
+
+    async function loadBoard(options = {}) {
+      if (!sessionToken) return;
+      const browserStart = performance.now();
+      const forceRefresh = Boolean(options.refresh);
+      consultButton.disabled = true;
+      refreshButton.disabled = true;
+      consultButton.textContent = forceRefresh ? "Consultando IXC..." : "Consultando...";
+      refreshButton.textContent = forceRefresh ? "IXC ao vivo..." : "Atualizando...";
+      const params = new URLSearchParams({ day: dayInput.value, filial: filialInput.value, include_client_names: "true" });
+      if (forceRefresh) params.set("refresh", "true");
+      try {
+        const [response] = await Promise.all([
+          apiFetch(`/api/os?${params.toString()}`),
+          loadTechnicians({ refresh: forceRefresh }),
+          fetchScale(),
+        ]);
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.detail || data.error || "Erro desconhecido");
+        data.performance = {
+          ...(data.performance || {}),
+          browser_ms: Math.round(performance.now() - browserStart),
+        };
+        rawData = data;
+        monitorNewOs(rawData);
+        renderBoard(visibleData(rawData));
+      } catch (error) {
+        renderError(error.message);
+      } finally {
+        consultButton.disabled = false;
+        refreshButton.disabled = false;
+        consultButton.textContent = "Consultar";
+        refreshButton.textContent = "Atualizar";
+      }
+    }
+
+    function technicianById(id) {
+      const selectedId = String(id || "");
+      return technicianRoster.find((tech) => String(tech.id || tech.id_tecnico || "") === selectedId)
+        || (rawData?.columns || []).find((column) => String(column.id_tecnico || "") === selectedId)
+        || null;
+    }
+
+    function duoOptions(selected = "", currentId = "") {
+      const options = technicianOptions();
+      const nodes = [el("option", { value: "", text: "Sem dupla" })];
+      options
+        .filter((item) => String(item.id) !== String(currentId))
+        .forEach((item) => {
+          const option = el("option", { value: item.id, text: `${item.tecnico_curto} (ID ${item.id})` });
+          option.selected = String(item.id) === String(selected);
+          nodes.push(option);
+      });
+      return nodes;
+    }
+
+    function normalizedScaleStatus(saved) {
+      const value = saved.situacao || "";
+      if (scaleSituations.includes(value)) return value;
+      return value ? "Em campo" : "Sem escala";
+    }
+
+    function normalizedScaleFunction(saved) {
+      const status = normalizedScaleStatus(saved);
+      if (["Folga", "Atestado", "Sem escala"].includes(status)) return "Sem escala";
+      const value = saved.funcao || saved.situacao || "";
+      const aliases = {
+        "Suporte tecnico": "Suporte",
+        Plantao: "Suporte do plantao",
+        "Plantão": "Suporte do plantao",
+        "Fibra/rede externa": "Instalacao",
+        Instalador: "Instalacao",
+        "Apoio interno": "Suporte",
+        Reserva: "Suporte",
+        Express: "Suporte",
+        Ausente: "Sem escala",
+      };
+      return scaleFunctions.includes(value) ? value : (aliases[value] || "Suporte");
+    }
+
+    function applyScaleRule(row) {
+      const situation = row.querySelector(".scale-situation");
+      const role = row.querySelector(".scale-role");
+      const unavailable = ["Folga", "Ausente", "Atestado", "Sem escala"].includes(situation.value);
+      if (unavailable) role.value = "Sem escala";
+      role.disabled = unavailable;
+    }
+
+    function renderScaleDialogRows(scale) {
+      scaleTable.innerHTML = "";
+      scaleTable.append(el("div", { class: "scale-row scale-header" }, [
+        el("span", { text: "Tecnico" }),
+        el("span", { text: "Funcao" }),
+        el("span", { text: "Status" }),
+        el("span", { text: "Dupla" }),
+      ]));
+      const current = new Map((scale?.items || []).map((item) => [String(item.id_tecnico || ""), item]));
+      technicianOptions().forEach((tech) => {
+        const saved = current.get(String(tech.id)) || {};
+        const row = el("div", { class: "scale-row" });
+        row.dataset.id = tech.id;
+        row.dataset.name = tech.tecnico;
+        row.dataset.short = tech.tecnico_curto;
+        const situation = el("select", { class: "scale-situation" }, optionList(scaleSituations, normalizedScaleStatus(saved)));
+        const role = el("select", { class: "scale-role" }, optionList(scaleFunctions, normalizedScaleFunction(saved)));
+        const partnerId = (saved.parceiro_ids || [])[0] || "";
+        const duo = el("select", { class: "scale-duo" }, duoOptions(partnerId, tech.id));
+        situation.addEventListener("change", () => applyScaleRule(row));
+        row.append(
+          el("div", {}, [
+            el("strong", { text: tech.tecnico_curto }),
+            el("small", { text: `${tech.tecnico} | ID ${tech.id}` }),
+          ]),
+          role,
+          situation,
+          duo
+        );
+        applyScaleRule(row);
+        scaleTable.append(row);
+      });
+    }
+
+    async function openScaleDialog() {
+      try {
+        scaleNote.textContent = "Carregando escala...";
+        await loadTechnicians();
+        const scale = await fetchScale();
+        renderScaleDialogRows(scale);
+        scaleNote.textContent = "Escala local. Nao altera dados no IXC.";
+        scaleDialog.showModal();
+      } catch (error) {
+        scaleNote.textContent = error.message;
+        scaleDialog.showModal();
+      }
+    }
+
+    function collectScalePayload() {
+      const items = [...scaleTable.querySelectorAll(".scale-row")].map((row) => {
+        if (row.classList.contains("scale-header")) return null;
+        const situation = row.querySelector(".scale-situation").value;
+        const role = ["Folga", "Ausente", "Atestado", "Sem escala"].includes(situation)
+          ? "Sem escala"
+          : row.querySelector(".scale-role").value;
+        const duo = row.querySelector(".scale-duo");
+        const partnerId = duo.value;
+        const partner = partnerId ? technicianById(partnerId) : null;
+        const duoIds = [row.dataset.id, partnerId].filter(Boolean).sort();
+        const duoName = partner ? `${row.dataset.short} + ${partner.tecnico_curto || partner.tecnico || partnerId}` : "";
+        return {
+          id_tecnico: row.dataset.id,
+          tecnico: row.dataset.name,
+          tecnico_curto: row.dataset.short,
+          situacao: situation,
+          funcao: role,
+          dupla_id: duoIds.length === 2 ? `dupla-${duoIds.join("-")}` : "",
+          dupla_nome: duoName,
+          parceiro_ids: partnerId ? [partnerId] : [],
+          observacao: "",
+        };
+      }).filter((item) => item && (item.situacao || item.funcao || item.dupla_nome));
+      return { date: dayInput.value, filial: filialInput.value, items };
+    }
+
+    function openScaleListing() {
+      const payload = collectScalePayload();
+      const filialName = filialInput.options[filialInput.selectedIndex]?.text || `Filial ${filialInput.value}`;
+      const lines = [
+        `Escala do dia ${payload.date} | ${filialName}`,
+        "",
+      ];
+      payload.items.forEach((item) => {
+        const status = item.situacao || "Sem escala";
+        if (["Folga", "Ausente", "Atestado", "Sem escala"].includes(status)) {
+          lines.push(`${item.tecnico_curto || item.tecnico} | ${status}`);
+        } else {
+          lines.push(`${item.tecnico_curto || item.tecnico} | Funcao: ${item.funcao || "Sem escala"} | Status: ${status} | Dupla: ${item.dupla_nome || "Sem dupla"}`);
+        }
+      });
+      if (!payload.items.length) lines.push("Nenhum tecnico na escala atual.");
+      lastReportText = lines.join("\n");
+      reportContent.innerHTML = "";
+      reportContent.append(el("pre", { class: "listing-box", text: lastReportText }));
+      reportDialog.showModal();
+    }
+
+    async function saveScaleData() {
+      saveScale.disabled = true;
+      saveScale.textContent = "Salvando...";
+      scaleNote.textContent = "Salvando escala local...";
+      try {
+        const response = await apiFetch("/api/scale", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(collectScalePayload()),
+        });
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.detail || "Falha ao salvar escala");
+        currentScale = data;
+        scaleNote.textContent = "Escala salva. Atualizando Kanban...";
+        await loadBoard({ refresh: true });
+        scaleDialog.close();
+      } catch (error) {
+        scaleNote.textContent = error.message;
+      } finally {
+        saveScale.disabled = false;
+        saveScale.textContent = "Salvar escala";
+      }
+    }
+
+    function countBy(items, callback) {
+      return items.reduce((acc, item) => {
+        const key = callback(item) || "Sem informacao";
+        acc[key] = (acc[key] || 0) + 1;
+        return acc;
+      }, {});
+    }
+
+    function renderCounterList(title, counts) {
+      const rows = Object.entries(counts).sort((a, b) => b[1] - a[1]);
+      const box = el("div", { class: "report-list" }, [
+        el("strong", { text: title }),
+      ]);
+      if (!rows.length) {
+        box.append(el("div", { text: "Sem dados." }));
+        return box;
+      }
+      rows.forEach(([key, value]) => box.append(el("div", { text: `${key}: ${value}` })));
+      return box;
+    }
+
+    function buildReport() {
+      const columns = rawData?.columns || [];
+      const items = columns.flatMap((column) => column.items);
+      const scaleItems = currentScale?.items || rawData?.scale?.items || [];
+      const offWithOs = items.filter((item) => item.escala?.fora_da_escala);
+      const inFieldIds = new Set(scaleItems.filter((item) => ["Em campo", "Plantao", "Suporte do plantao", "Apoio interno", "Reserva"].includes(item.situacao)).map((item) => String(item.id_tecnico)));
+      const techsWithoutOs = scaleItems.filter((item) => inFieldIds.has(String(item.id_tecnico)) && !items.some((os) => String(os.id_tecnico) === String(item.id_tecnico)));
+      const statusCounts = countBy(items, (item) => item.status || "Sem status");
+      const roleCounts = countBy(scaleItems, (item) => item.funcao || "Sem funcao");
+      const duoCounts = countBy(items.filter((item) => item.escala?.dupla_nome), (item) => item.escala.dupla_nome);
+      lastReportText = [
+        `Relatorio Kanban ${dayInput.value} filial ${filialInput.value}`,
+        `OS: ${items.length}`,
+        `Tecnicos com OS: ${columns.filter((column) => column.total > 0).length}`,
+        `Atrasadas: ${items.filter((item) => item.agenda_alert?.is_late).length}`,
+        `Em campo sem OS: ${techsWithoutOs.length}`,
+        `OS em tecnico fora da escala: ${offWithOs.length}`,
+      ].join("\n");
+      return { items, columns, scaleItems, offWithOs, techsWithoutOs, statusCounts, roleCounts, duoCounts };
+    }
+
+    function shiftFor(item) {
+      const value = item.data_fechamento || item.data_hora_execucao || item.data_inicio || item.data_agenda;
+      const hour = Number(String(value || "").slice(11, 13));
+      if (Number.isNaN(hour)) return "Sem horario";
+      if (hour < 12) return "Manha";
+      if (hour < 18) return "Tarde";
+      return "Noite";
+    }
+
+    function renderDashRows(container, counts) {
+      container.innerHTML = "";
+      const rows = Object.entries(counts).sort((a, b) => b[1] - a[1]);
+      if (!rows.length) {
+        container.append(el("div", { class: "dash-row" }, [el("span", { text: "Sem dados" }), el("b", { text: "0" })]));
+        return;
+      }
+      rows.forEach(([name, value]) => {
+        container.append(el("div", { class: "dash-row" }, [el("span", { text: name }), el("b", { text: value })]));
+      });
+    }
+
+    function renderDashboard() {
+      if (!rawData) return;
+      const report = buildReport();
+      const executed = report.items.filter((item) => ["F", "EX", "EP"].includes(item.status));
+      const finalized = report.items.filter((item) => item.status === "F");
+      const late = report.items.filter((item) => item.agenda_alert?.is_late);
+      const productiveTechs = report.columns.filter((column) => column.items.length);
+      dashboardGrid.innerHTML = "";
+      [
+        ["OS no dia", report.items.length],
+        ["Executadas/em execucao", executed.length],
+        ["Finalizadas", finalized.length],
+        ["Atrasadas", late.length],
+        ["Tecnicos com OS", productiveTechs.length],
+        ["Media OS/tecnico", productiveTechs.length ? (report.items.length / productiveTechs.length).toFixed(1) : "0"],
+        ["Em campo sem OS", report.techsWithoutOs.length],
+        ["Fora da escala", report.offWithOs.length],
+      ].forEach(([label, value]) => {
+        dashboardGrid.append(el("div", { class: "dash-panel" }, [
+          el("h3", { text: label }),
+          el("span", { class: "dash-number", text: value }),
+        ]));
+      });
+      renderDashRows(shiftDashboard, countBy(executed, shiftFor));
+    }
+
+    async function renderAudit() {
+      if (!currentUser || currentUser.role !== "admin") return;
+      auditTable.innerHTML = "Carregando...";
+      const response = await apiFetch("/api/audit?limit=150");
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.detail || "Falha ao carregar auditoria");
+      auditTable.innerHTML = "";
+      if (!data.items.length) {
+        auditTable.append(el("div", { class: "audit-item", text: "Sem registros de auditoria." }));
+        return;
+      }
+      data.items.forEach((item) => {
+        auditTable.append(el("div", { class: "audit-item" }, [
+          el("span", { text: fmtDateTimeFull(item.created_at) }),
+          el("b", { text: `${item.event} | ${item.actor?.name || "sistema"}` }),
+          el("code", { text: JSON.stringify(item.details || {}, null, 2) }),
+        ]));
+      });
+    }
+
+    async function renderUsers() {
+      if (!currentUser || currentUser.role !== "admin") return;
+      usersTable.innerHTML = "Carregando...";
+      const response = await apiFetch("/api/users");
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.detail || "Falha ao carregar logins");
+      usersTable.innerHTML = "";
+      if (!data.items.length) {
+        usersTable.append(el("div", { class: "audit-item", text: "Sem logins cadastrados." }));
+        return;
+      }
+      data.items.forEach((item) => {
+        usersTable.append(el("div", { class: "audit-item" }, [
+          el("b", { text: `${item.name} | ${item.role === "admin" ? "ADM" : "Supervisor"}` }),
+          el("span", { text: `Usuario: ${item.username}` }),
+          el("code", { text: `origem: ${item.source || "--"}` }),
+        ]));
+      });
+    }
+
+    async function createUser(event) {
+      event.preventDefault();
+      if (!currentUser || currentUser.role !== "admin") return;
+      userCreateResult.textContent = "Criando login...";
+      const payload = {
+        username: newUsername.value,
+        name: newUserName.value,
+        role: newUserRole.value,
+        password: newUserPassword.value,
+      };
+      try {
+        const response = await apiFetch("/api/users", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.detail || "Falha ao criar login");
+        userCreateResult.textContent = `Login criado: ${data.user.username}`;
+        newUsername.value = "";
+        newUserName.value = "";
+        newUserPassword.value = "";
+        await renderUsers();
+      } catch (error) {
+        userCreateResult.textContent = error.message;
+      }
+    }
+
+    function openReportDialog() {
+      if (!rawData) return;
+      const report = buildReport();
+      reportContent.innerHTML = "";
+      reportContent.append(
+        el("div", { class: "report-grid" }, [
+          el("div", { class: "report-card" }, [el("b", { text: report.items.length }), el("span", { text: "OS no dia" })]),
+          el("div", { class: "report-card" }, [el("b", { text: report.columns.filter((column) => column.total > 0).length }), el("span", { text: "tecnicos com OS" })]),
+          el("div", { class: "report-card" }, [el("b", { text: report.items.filter((item) => item.agenda_alert?.is_late).length }), el("span", { text: "atrasadas" })]),
+          el("div", { class: "report-card" }, [el("b", { text: report.offWithOs.length }), el("span", { text: "OS fora da escala" })]),
+        ]),
+        renderCounterList("Status IXC", report.statusCounts),
+        renderCounterList("Carga por funcao do dia", report.roleCounts),
+        renderCounterList("OS por dupla", report.duoCounts),
+        renderCounterList("Tecnicos em campo sem OS", countBy(report.techsWithoutOs, (item) => item.tecnico_curto || item.tecnico)),
+        renderCounterList("OS em tecnico fora da escala", countBy(report.offWithOs, (item) => `${item.tecnico} | OS ${item.id}`)),
+      );
+      reportDialog.showModal();
+    }
+
+    async function fetchOsClientInfo(item) {
+      if (!item?.id || item.cliente_loaded) return item;
+      try {
+        const response = await apiFetch(`/api/os/${encodeURIComponent(item.id)}/cliente`);
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.detail || data.error || "Erro ao consultar cliente");
+        item.cliente = data.cliente || item.cliente;
+        item.id_cliente = data.id_cliente || item.id_cliente;
+        item.cliente_loaded = true;
+      } catch (error) {
+        console.warn("Falha ao carregar nome do cliente da OS.", error);
+      }
+      return item;
+    }
+
+    async function saveFiberUsage() {
+      if (!selectedOs?.id) return;
+      const rawValue = fiberInput.value.trim();
+      const value = rawValue === "" ? null : Number(rawValue);
+      if (value !== null && (!Number.isInteger(value) || value < 0)) {
+        fiberNote.textContent = "Informe a metragem em numero inteiro.";
+        return;
+      }
+      saveFiberButton.disabled = true;
+      saveFiberButton.textContent = "Salvando...";
+      fiberNote.textContent = "Registrando fibra usada na OS...";
+      try {
+        const response = await apiFetch(`/api/os/${encodeURIComponent(selectedOs.id)}/extra`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ fibra_utilizada_m: value }),
+        });
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.detail || "Falha ao salvar fibra.");
+        selectedOs.fibra_utilizada_m = data.extra?.fibra_utilizada_m ?? null;
+        selectedOs.extra = data.extra || {};
+        fiberInput.value = selectedOs.fibra_utilizada_m ?? "";
+        fiberNote.textContent = selectedOs.fibra_utilizada_m === null
+          ? "Registro de fibra removido desta OS."
+          : `Fibra registrada: ${selectedOs.fibra_utilizada_m} m.`;
+        renderBoard(visibleData(rawData));
+      } catch (error) {
+        fiberNote.textContent = error.message;
+      } finally {
+        saveFiberButton.disabled = false;
+        saveFiberButton.textContent = "Salvar fibra";
+      }
+    }
+
+    async function openDetails(item) {
+      selectedOs = item;
+      await fetchOsClientInfo(item);
+      modalTitle.textContent = `OS ${item.id}`;
+      const rows = [
+        ["Cliente", item.cliente],
+        ["ID cliente", item.id_cliente],
+        ["ID OS", item.id],
+        ["Tecnico", item.tecnico],
+        ["Situacao na escala", item.escala?.situacao || "Sem escala"],
+        ["Funcao do dia", item.escala?.funcao || "--"],
+        ["Dupla", item.escala?.dupla_nome || "--"],
+        ["Filial", item.filial_nome],
+        ["Status IXC", `${item.status || "--"} - ${item.status_label || item.state.label}`],
+        ["Fibra utilizada", item.fibra_utilizada_m !== null && item.fibra_utilizada_m !== undefined ? `${item.fibra_utilizada_m} m` : "--"],
+        ["Fonte fibra", item.fibra_source || "--"],
+        ["Fonte do status", item.status_source || "IXC"],
+        ["Leitura operacional", item.state.label],
+        ["Alerta de agenda", item.agenda_alert?.is_late ? (item.agenda_alert?.motivo || "Atrasada") : "Sem atraso critico"],
+        ["Assunto", item.assunto],
+        ["Agenda", `${fmtDateTime(item.data_agenda)} - ${fmtDateTime(item.data_agenda_final)}`],
+        ["Inicio", fmtDateTime(item.data_inicio)],
+        ["Execucao", fmtDateTime(item.data_hora_execucao)],
+        ["Fechamento", fmtDateTime(item.data_fechamento)],
+        ["Prazo SLA", fmtDateTimeFull(item.data_prazo_limite)],
+        ["Agenda descricao", item.agenda_descricao || "--"],
+        ["Leitura", item.cumprimento_agenda?.motivo || "--"],
+      ];
+      modalGrid.innerHTML = "";
+      rows.forEach(([label, value]) => {
+        modalGrid.append(el("span", { text: label }), el("strong", { text: value || "--" }));
+      });
+      modalGrid.append(renderTimeline(item.timeline || []));
+      fiberInput.value = item.fibra_utilizada_m ?? "";
+      fiberNote.textContent = item.fibra_source?.includes("IXC")
+        ? "Metragem localizada na aba Produto da OS quando existe produto Fibra ou DROP. O campo manual fica como ajuste local."
+        : "Informe a metragem se a OS utilizou fibra. Salva no registro local da OS.";
+      dialog.showModal();
+    }
+
+    function technicianOptions() {
+      const seen = new Set();
+      const totals = new Map(
+        (rawData?.columns || []).map((column) => [String(column.id_tecnico || ""), column.total || 0])
+      );
+      const options = [];
+      technicianRoster.forEach((tech) => {
+        const id = String(tech.id || tech.id_tecnico || "");
+        if (!id || seen.has(id)) return;
+        seen.add(id);
+        options.push({
+          id,
+          tecnico: tech.tecnico || tech.nome || tech.tecnico_curto || "Sem tecnico",
+          tecnico_curto: tech.tecnico_curto || shortName(tech.tecnico || tech.nome),
+          total: totals.get(id) || 0,
+        });
+      });
+      (rawData?.columns || []).forEach((column) => {
+        const id = String(column.id_tecnico || "");
+        if (!id || seen.has(id)) return;
+        seen.add(id);
+        options.push({
+          id,
+          tecnico: column.tecnico || column.tecnico_curto || "Sem tecnico",
+          tecnico_curto: column.tecnico_curto || shortName(column.tecnico),
+          total: column.total || 0,
+        });
+      });
+      return options.sort((a, b) => a.tecnico_curto.localeCompare(b.tecnico_curto, "pt-BR"));
+    }
+
+    function columnFromTechnician(id) {
+      const selectedId = String(id || "");
+      const existing = (rawData?.columns || []).find((column) => String(column.id_tecnico || "") === selectedId);
+      if (existing) return existing;
+      const option = technicianOptions().find((item) => item.id === selectedId);
+      return option ? { id_tecnico: option.id, tecnico: option.tecnico, tecnico_curto: option.tecnico_curto, items: [] } : null;
+    }
+
+    function populateTechnicianSelect(selectedId) {
+      const options = technicianOptions();
+      scheduleTech.innerHTML = "";
+      options.forEach((item) => {
+        const option = el("option", {
+          value: item.id,
+          text: `${item.tecnico_curto} (ID ${item.id}) - ${item.total || 0} OS`,
+        });
+        scheduleTech.append(option);
+      });
+      scheduleTech.value = String(selectedId || schedulingOs?.id_tecnico || options[0]?.id || "");
+      targetColumn = columnFromTechnician(scheduleTech.value);
+    }
+
+    function openSchedule(item, column = null) {
+      schedulingOs = item;
+      targetColumn = column;
+      scheduleTitle.textContent = `Agendar OS ${item.id}`;
+      const scheduleWindow = suggestedScheduleWindow(item);
+      scheduleStart.value = scheduleWindow.start;
+      scheduleEnd.value = scheduleWindow.end;
+      populateTechnicianSelect(column?.id_tecnico || item.id_tecnico);
+      if (targetColumn) scheduleTitle.textContent = `Agendar OS ${item.id} para ${targetColumn.tecnico_curto}`;
+      scheduleStatus.value = "agendar";
+      scheduleMessage.value = "Agendamento solicitado pelo Kanban da Alta Performance Tecnica VIP TELECOM.";
+      scheduleResult.textContent = "";
+      testSchedule.textContent = "Gravar no IXC";
+      resetWriteConfirmation();
+      updateActionNote(column);
+      scheduleDialog.showModal();
+    }
+
+    function resetWriteConfirmation() {
+      pendingWritePayload = null;
+      confirmBox.classList.remove("active");
+      writeSchedule.hidden = true;
+      writeSchedule.disabled = false;
+      writeSchedule.textContent = "Confirmar no IXC";
+    }
+
+    function updateActionNote(column = null) {
+      const target = column || targetColumn;
+      const notes = {
+        agendar: "Obrigatorio: data/hora, fim da janela e status AG.",
+        marcar_reagendamento: "Obrigatorio: observacao/mensagem.",
+        analisar: "Data/hora e observacao podem ser usadas para registrar a analise.",
+        encaminhar: "Pode exigir setor, tecnico e assunto no fluxo real do IXC.",
+        mensagem: "Obrigatorio: observacao/mensagem.",
+        executar: "Obrigatorio: data/hora de inicio.",
+        finalizar: "Obrigatorio: inicio, fim e observacao/mensagem.",
+        reabrir: "Obrigatorio: observacao/mensagem.",
+      };
+      const targetText = target ? `Destino: ${target.tecnico_curto} (ID ${target.id_tecnico || "--"}). ` : "";
+      const tech = schedulingOs ? `Tecnico IXC: ${schedulingOs.id_tecnico || "--"}. ` : "";
+      scheduleNote.textContent = `${targetText}${tech}${notes[scheduleStatus.value] || ""} Ao clicar em Gravar no IXC, a acao sera enviada direto.`;
+    }
+
+    function currentActionPayload(confirmWrite = false) {
+      targetColumn = columnFromTechnician(scheduleTech.value) || targetColumn;
+      const payload = {
+        acao: scheduleStatus.value,
+        data_inicio: toIxcDateTime(scheduleStart.value),
+        data_final: toIxcDateTime(scheduleEnd.value || scheduleStart.value),
+        id_tecnico: scheduleTech.value || targetColumn?.id_tecnico || schedulingOs.id_tecnico || "",
+        mensagem: scheduleMessage.value,
+      };
+      if (confirmWrite) {
+        payload.confirmar_escrita = true;
+        payload.confirmacao = "ESCREVER_IXC";
+      }
+      return payload;
+    }
+
+    async function submitSchedule(event) {
+      event.preventDefault();
+      if (!schedulingOs) return;
+      resetWriteConfirmation();
+      testSchedule.disabled = true;
+      testSchedule.textContent = "Gravando...";
+      scheduleResult.textContent = "Enviando escrita real ao IXC...";
+      const payload = currentActionPayload(true);
+      try {
+        const response = await apiFetch(`/api/os/${schedulingOs.id}/acao`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+        const data = await response.json();
+        if (!response.ok) {
+          const detail = typeof data.detail === "string"
+            ? data.detail
+            : data.detail?.message || data.message || "Falha ao gravar no IXC";
+          throw new Error(detail);
+        }
+        const verified = data.verification?.row;
+        const checked = verified
+          ? `IXC confirmou: status ${verified.status || "--"}, agenda ${fmtDateTime(verified.data_agenda)}, fim ${fmtDateTime(verified.data_agenda_final)}, tecnico ${verified.id_tecnico || "--"}.`
+          : `IXC OK: ${data.acao} gravado.`;
+        scheduleResult.textContent = `${checked} Atualizando bandeja...`;
+        const updatedLocally = applyVerifiedUpdate(verified);
+        browserNotify(
+          "OS alocada no Kanban",
+          `OS ${schedulingOs.id} gravada por ${currentUser?.name || "usuario"}${targetColumn?.tecnico_curto ? ` para ${targetColumn.tecnico_curto}` : ""}.`
+        );
+        if (!updatedLocally) await loadBoard({ refresh: true });
+        setTimeout(() => scheduleDialog.close(), 900);
+      } catch (error) {
+        scheduleResult.textContent = error.message;
+      } finally {
+        testSchedule.disabled = false;
+        testSchedule.textContent = "Gravar no IXC";
+      }
+    }
+
+    async function commitSchedule() {
+      if (!schedulingOs || !pendingWritePayload) return;
+      writeSchedule.disabled = true;
+      testSchedule.disabled = true;
+      writeSchedule.textContent = "Gravando...";
+      scheduleResult.textContent = "Enviando escrita real ao IXC...";
+      const payload = currentActionPayload(true);
+      try {
+        const response = await apiFetch(`/api/os/${schedulingOs.id}/acao`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+        const data = await response.json();
+        if (!response.ok) {
+          const detail = typeof data.detail === "string"
+            ? data.detail
+            : data.detail?.message || data.message || "Falha ao gravar no IXC";
+          throw new Error(detail);
+        }
+        const verified = data.verification?.row;
+        const checked = verified
+          ? `IXC confirmou: status ${verified.status || "--"}, agenda ${fmtDateTime(verified.data_agenda)}, fim ${fmtDateTime(verified.data_agenda_final)}, tecnico ${verified.id_tecnico || "--"}.`
+          : `IXC OK: ${data.acao} gravado.`;
+        scheduleResult.textContent = `${checked} Atualizando bandeja...`;
+        const updatedLocally = applyVerifiedUpdate(verified);
+        browserNotify(
+          "OS alocada no Kanban",
+          `OS ${schedulingOs.id} gravada por ${currentUser?.name || "usuario"}${targetColumn?.tecnico_curto ? ` para ${targetColumn.tecnico_curto}` : ""}.`
+        );
+        resetWriteConfirmation();
+        if (!updatedLocally) await loadBoard({ refresh: true });
+        setTimeout(() => scheduleDialog.close(), 900);
+      } catch (error) {
+        scheduleResult.textContent = error.message;
+        writeSchedule.disabled = false;
+        writeSchedule.textContent = "Confirmar no IXC";
+      } finally {
+        testSchedule.disabled = false;
+      }
+    }
+
+    function renderTimeline(items) {
+      const section = el("section", { class: "timeline" }, [
+        el("div", { class: "timeline-title", text: "Linha do tempo" }),
+      ]);
+      const list = el("div", { class: "timeline-list" });
+      if (!items.length) {
+        list.append(el("div", { class: "empty", text: "Sem eventos suficientes para montar a linha do tempo." }));
+      } else {
+        items.forEach((item) => {
+          list.append(el("div", { class: "timeline-item" }, [
+            el("span", { class: `timeline-dot ${item.kind || "neutral"}` }),
+            el("span", { class: "timeline-label", text: item.label || "Evento" }),
+            el("div", { class: "timeline-content" }, [
+              el("strong", { text: fmtDateTimeFull(item.value) }),
+              el("span", { text: item.note || "--" }),
+            ]),
+          ]));
+        });
+      }
+      section.append(list);
+      return section;
+    }
+
+    async function copySelected() {
+      if (!selectedOs) return;
+      const text = `OS ${selectedOs.id} | ${selectedOs.state.label} | ${selectedOs.tecnico} | ${selectedOs.assunto}`;
+      await copyText(text, copyButton, "Copiar");
+    }
+
+    function switchView(viewId) {
+      [boardView, dashboardView, auditView, usersView].forEach((view) => {
+        view.hidden = view.id !== viewId;
+      });
+      viewButtons.forEach((button) => {
+        const active = button.dataset.view === viewId;
+        button.classList.toggle("primary-button", active);
+      });
+      if (viewId !== "boardView" && planningMode) setPlanningMode(false);
+      if (viewId === "dashboardView") renderDashboard();
+      if (viewId === "auditView") {
+        renderAudit().catch((error) => {
+          auditTable.innerHTML = "";
+          auditTable.append(el("div", { class: "audit-item", text: error.message }));
+        });
+      }
+      if (viewId === "usersView") {
+        renderUsers().catch((error) => {
+          usersTable.innerHTML = "";
+          usersTable.append(el("div", { class: "audit-item", text: error.message }));
+        });
+      }
+    }
+
+    loginForm.addEventListener("submit", doLogin);
+    userCreateForm.addEventListener("submit", createUser);
+    logoutButton.addEventListener("click", doLogout);
+    notifyButton.addEventListener("click", ensureNotificationPermission);
+    viewButtons.forEach((button) => {
+      button.addEventListener("click", () => switchView(button.dataset.view));
+    });
+    planningButton.addEventListener("click", () => setPlanningMode(!planningMode));
+    showFiltersButton.addEventListener("click", togglePlanningFilters);
+    closeDialog.addEventListener("click", () => dialog.close());
+    closeDialogBottom.addEventListener("click", () => dialog.close());
+    scheduleFromDetail.addEventListener("click", () => {
+      if (!selectedOs) return;
+      dialog.close();
+      openSchedule(selectedOs, columnFromTechnician(selectedOs.id_tecnico));
+    });
+    closeSchedule.addEventListener("click", () => scheduleDialog.close());
+    cancelSchedule.addEventListener("click", () => scheduleDialog.close());
+    scheduleDialog.addEventListener("close", () => {
+      targetColumn = null;
+      schedulingOs = null;
+      resetWriteConfirmation();
+    });
+    scheduleForm.addEventListener("submit", submitSchedule);
+    scheduleStatus.addEventListener("change", () => {
+      resetWriteConfirmation();
+      updateActionNote(targetColumn);
+    });
+    scheduleTech.addEventListener("change", () => {
+      targetColumn = columnFromTechnician(scheduleTech.value);
+      scheduleTitle.textContent = targetColumn
+        ? `Agendar OS ${schedulingOs?.id || ""} para ${targetColumn.tecnico_curto}`
+        : `Agendar OS ${schedulingOs?.id || ""}`;
+      resetWriteConfirmation();
+      updateActionNote(targetColumn);
+    });
+    [scheduleStart, scheduleEnd, scheduleMessage].forEach((input) => {
+      input.addEventListener("input", resetWriteConfirmation);
+    });
+    writeSchedule.addEventListener("click", commitSchedule);
+    copyButton.addEventListener("click", copySelected);
+    saveFiberButton.addEventListener("click", saveFiberUsage);
+    consultButton.addEventListener("click", () => loadBoard());
+    refreshButton.addEventListener("click", () => loadBoard({ refresh: true }));
+    scaleButton.addEventListener("click", openScaleDialog);
+    reportButton.addEventListener("click", openReportDialog);
+    closeScale.addEventListener("click", () => scaleDialog.close());
+    cancelScale.addEventListener("click", () => scaleDialog.close());
+    scaleListingButton.addEventListener("click", openScaleListing);
+    saveScale.addEventListener("click", saveScaleData);
+    closeReport.addEventListener("click", () => reportDialog.close());
+    closeReportBottom.addEventListener("click", () => reportDialog.close());
+    copyReport.addEventListener("click", async () => {
+      await copyText(lastReportText, copyReport, "Copiar resumo");
+    });
+    closeCopyFallback.addEventListener("click", () => copyFallbackDialog.close());
+    closeCopyFallbackBottom.addEventListener("click", () => copyFallbackDialog.close());
+    searchInput.addEventListener("input", () => rawData && renderBoard(visibleData(rawData)));
+    hideDoneInput.addEventListener("change", () => rawData && renderBoard(visibleData(rawData)));
+    stateButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        activeState = button.dataset.state;
+        stateButtons.forEach((item) => item.classList.toggle("active", item === button));
+        if (rawData) renderBoard(visibleData(rawData));
+      });
+    });
+    densityButtons.forEach((button) => {
+      button.addEventListener("click", () => setDensity(button.dataset.density));
+    });
+    setDensity(activeDensity);
+    dayInput.value = today();
+    verifySession().then((ok) => {
+      if (ok) loadBoard();
+      else loginScreen.hidden = false;
+    });
+    setInterval(() => loadBoard({ refresh: true }), newOsPollMs);
+  </script>
+</body>
+</html>

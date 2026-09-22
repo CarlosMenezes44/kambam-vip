@@ -1,0 +1,51 @@
+﻿KANBAN OS TECNICOS VIP - PACOTE SOBE E RODA
+
+Este pacote esta pronto para subir e rodar a ferramenta.
+
+RODAR RAPIDO NO WINDOWS
+1. Descompacte.
+2. Coloque o token IXC em uma das opcoes:
+   - arquivo: .openclaw/secrets/ixc_api_token.txt
+   - variavel de ambiente: IXC_API_TOKEN
+3. Execute: RODAR-WINDOWS.bat
+4. Acesse: http://IP_DO_SERVIDOR:8765
+
+RODAR RAPIDO NO LINUX
+1. Descompacte em /opt/kanban-vip ou outra pasta.
+2. Rode: chmod +x rodar-linux.sh
+3. Coloque o token IXC em uma das opcoes:
+   - arquivo: .openclaw/secrets/ixc_api_token.txt
+   - variavel de ambiente: IXC_API_TOKEN
+4. Execute: ./rodar-linux.sh
+5. Acesse: http://IP_DO_SERVIDOR:8765
+
+RODAR COM DOCKER
+1. Copie .env.example para .env.
+2. Preencha IXC_API_TOKEN no .env.
+3. Execute: docker compose up -d --build
+4. Acesse: http://IP_DO_SERVIDOR:8765
+
+LOGIN INICIAL
+ADM: admin / adminvip2026
+Supervisor: supervisor / supervisorvip2026
+
+IMPORTANTE
+- Troque as senhas padrao antes de liberar para a equipe.
+- Nao publique sem HTTPS/firewall/VPN.
+- Teste escrita IXC primeiro em OS controlada.
+
+INCLUIDO
+- app completo
+- scripts de integracao IXC
+- data atual
+- cache/snapshots atuais
+- assets
+- pastas logs e relatorios/os_monitor prontas
+- scripts Windows, Linux e Docker
+- exemplos systemd e nginx
+- suporte a token por arquivo e por IXC_API_TOKEN
+
+NAO INCLUIDO
+- Token IXC real, porque e credencial sensivel.
+- Logs operacionais reais.
+- Pacotes antigos de dist/.

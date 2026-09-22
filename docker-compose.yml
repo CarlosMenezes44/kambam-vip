@@ -1,0 +1,13 @@
+﻿services:
+  kanban-vip:
+    build: .
+    container_name: kanban-vip
+    restart: unless-stopped
+    ports:
+      - "8765:8765"
+    environment:
+      - IXC_API_TOKEN=${IXC_API_TOKEN}
+    volumes:
+      - ./data:/app/data
+      - ./cache:/app/cache
+      - ./logs:/app/logs
